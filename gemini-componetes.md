@@ -95,5 +95,10 @@ button { cursor: pointer; border: none; font-family: inherit; }
 *   `wm-mockup-browser`: Container imitando janela de navegador (MacOS style) para imagens do app.
 *   `wm-flow-line`: Linha pontilhada conectando os passos da jornada.
 
+### Componentes de Demonstração (Demo Mode)
+*   `wm-demo-banner`: Barra fixa no topo alertando sobre dados fictícios (`background: var(--wm-color-warning); color: white;`).
+*   `wm-modal`: Overlay com fundo escuro e box centralizado para mensagens e confirmações.
+*   `wm-toast`: Alerta flutuante no rodapé para simular ações de sucesso.
+
 ---
 *(O restante dos componentes da área do colaborador permanecem inalterados como definido anteriormente)*

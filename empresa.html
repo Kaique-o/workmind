@@ -325,6 +325,11 @@
     <!-- Main Wrapper -->
     <div class="main-wrapper">
         
+        <!-- Demo Banner -->
+        <div class="wm-demo-banner">
+            <i data-lucide="info" style="width: 14px;"></i> Modo Demonstração. Dados fictícios. Nenhuma informação real processada.
+        </div>
+
         <!-- Topbar -->
         <header class="topbar">
             <div class="flex items-center gap-md">
@@ -341,7 +346,7 @@
             </div>
 
             <div class="topbar-actions">
-                <button class="btn-enterprise btn-enterprise-primary" style="min-height: 36px; font-size: 11px; padding: 0 16px;"><i data-lucide="plus"></i> Criar Ação</button>
+                <button class="btn-enterprise btn-enterprise-primary" style="min-height: 36px; font-size: 11px; padding: 0 16px;" onclick="openFakeModal('Nova Ação', 'Simulação de criação de plano de intervenção executivo.')"><i data-lucide="plus"></i> Criar Ação</button>
                 <div style="position: relative; cursor: pointer;">
                     <i data-lucide="bell" style="width: 20px;"></i>
                     <span style="position: absolute; top: -4px; right: -4px; background: var(--risk-high); color: white; border-radius: 50%; width: 14px; height: 14px; font-size: 9px; display: flex; align-items: center; justify-content: center; border: 2px solid white;">3</span>
@@ -362,7 +367,7 @@
                     <p class="text-sm text-gray-medium">Acompanhe riscos psicossociais, compliance NR 01, ações e impacto organizacional.</p>
                 </div>
                 <div class="flex gap-sm">
-                    <button class="btn-enterprise btn-enterprise-outline" style="min-height: 36px;"><i data-lucide="download"></i> Gerar Relatório Executivo</button>
+                    <button class="btn-enterprise btn-enterprise-outline" style="min-height: 36px;" onclick="showToast('Relatório gerado para demonstração')"><i data-lucide="download"></i> Gerar Relatório Executivo</button>
                 </div>
             </div>
 
@@ -378,7 +383,7 @@
                     </div>
                     <div class="flex gap-sm">
                         <button class="btn-enterprise btn-enterprise-primary text-xs" style="min-height: 32px;" onclick="switchView('acoes-plano')">Criar Intervenção</button>
-                        <button class="btn-enterprise btn-enterprise-outline text-xs" style="min-height: 32px; border-color: var(--risk-critical); color: var(--risk-critical);">Ver Detalhe do Risco</button>
+                        <button class="btn-enterprise btn-enterprise-outline text-xs" style="min-height: 32px; border-color: var(--risk-critical); color: var(--risk-critical);" onclick="openFakeModal('Detalhe do Risco', 'Apresentando detalhamento simulado com cruzamentos analíticos e sinais qualitativos.')">Ver Detalhe do Risco</button>
                     </div>
                 </div>
             </div>
@@ -442,7 +447,7 @@
                                 <p class="text-sm font-bold">Revisar fluxo de metas Comerciais</p>
                                 <p class="text-xs text-gray-medium">Responsável: João Diretor</p>
                             </div>
-                            <button class="btn-enterprise btn-enterprise-outline text-xs p-4" style="min-height: 28px;">Concluir</button>
+                            <button class="btn-enterprise btn-enterprise-outline text-xs p-4" style="min-height: 28px;" onclick="showToast('Ação concluída no plano de intervenção')">Concluir</button>
                         </div>
                         <div class="p-12 border-radius-md bg-ice flex justify-between items-center">
                             <div>
@@ -485,7 +490,7 @@
                                 <p class="text-xs text-gray-medium mt-4">Vencimento: Hoje</p>
                             </div>
                         </div>
-                        <button class="btn-enterprise btn-enterprise-outline text-xs" style="min-height: 32px;">Abrir Item</button>
+                        <button class="btn-enterprise btn-enterprise-outline text-xs" style="min-height: 32px;" onclick="openFakeModal('Detalhe da Tarefa', 'Simulando visualização de subtarefas e responsáveis.')">Abrir Item</button>
                     </div>
                     <!-- Task Item -->
                     <div class="flex justify-between items-center p-16 border border-gray-light border-radius-md">
@@ -500,7 +505,7 @@
                                 <p class="text-xs text-gray-medium mt-4">Vencimento: Amanhã</p>
                             </div>
                         </div>
-                        <button class="btn-enterprise btn-enterprise-outline text-xs" style="min-height: 32px;">Anexar Arquivo</button>
+                        <button class="btn-enterprise btn-enterprise-outline text-xs" style="min-height: 32px;" onclick="showToast('Evidência adicionada ao relatório')">Anexar Arquivo</button>
                     </div>
                 </div>
             </div>
@@ -513,7 +518,7 @@
                     <h1 class="text-2xl font-extrabold">Plano de Intervenção</h1>
                     <p class="text-sm text-gray-medium">Acompanhe a execução das ações estratégicas para mitigação de riscos.</p>
                 </div>
-                <button class="btn-enterprise btn-enterprise-primary"><i data-lucide="plus"></i> Criar Nova Ação</button>
+                <button class="btn-enterprise btn-enterprise-primary" onclick="openFakeModal('Nova Ação', 'Formulário de criação de nova medida preventiva.')"><i data-lucide="plus"></i> Criar Nova Ação</button>
             </div>
             
             <!-- Kanban Board -->
@@ -524,7 +529,7 @@
                         <span class="badge-risk critical text-9 mb-8">IA INSIGHT</span>
                         <h5 class="text-sm font-bold">Adequação de Metas Comerciais</h5>
                         <p class="text-xs mt-4 text-gray-medium">Origem: Risco de Sobrecarga (Comercial)</p>
-                        <button class="btn-enterprise btn-enterprise-outline text-xs mt-12 w-full" style="min-height: 28px;">Priorizar Ação</button>
+                        <button class="btn-enterprise btn-enterprise-outline text-xs mt-12 w-full" style="min-height: 28px;" onclick="showToast('Ação priorizada e enviada para responsáveis')">Priorizar Ação</button>
                     </div>
                 </div>
                 <div class="kanban-column">
@@ -548,7 +553,7 @@
                     <div class="card-enterprise mb-12 p-12" style="border-left: 3px solid var(--success);">
                         <h5 class="text-sm font-bold">Canal de Apoio Psicológico</h5>
                         <p class="text-xs mt-4 text-gray-medium">Aguardando avaliação dos colaboradores</p>
-                        <button class="btn-enterprise btn-enterprise-outline text-xs mt-12 w-full" style="min-height: 28px;"><i data-lucide="message-square"></i> Ver Feedback</button>
+                        <button class="btn-enterprise btn-enterprise-outline text-xs mt-12 w-full" style="min-height: 28px;" onclick="openFakeModal('Feedback Anônimo', 'Visualização do ROI qualitativo desta ação pelos colaboradores.')"><i data-lucide="message-square"></i> Ver Feedback</button>
                     </div>
                 </div>
             </div>
@@ -561,7 +566,7 @@
                     <h1 class="text-2xl font-extrabold">Compliance NR 01 (GRO)</h1>
                     <p class="text-sm text-gray-medium">Central de evidências e inventário de riscos psicossociais para o PGR.</p>
                 </div>
-                <button class="btn-enterprise btn-enterprise-primary"><i data-lucide="file-check"></i> Gerar Pacote de Auditoria</button>
+                <button class="btn-enterprise btn-enterprise-primary" onclick="showToast('Pacote de auditoria NR 01 gerado com sucesso')"><i data-lucide="file-check"></i> Gerar Pacote de Auditoria</button>
             </div>
 
             <div class="card-enterprise">
@@ -596,7 +601,7 @@
                             <td><span class="badge-risk high">ATENÇÃO</span></td>
                             <td>3 Sem Medida de Controle</td>
                             <td><span class="text-xs text-gray-medium italic">Plano Incompleto</span></td>
-                            <td><button class="btn-enterprise btn-enterprise-outline p-4 text-xs">Vincular Ação</button></td>
+                            <td><button class="btn-enterprise btn-enterprise-outline p-4 text-xs" onclick="openFakeModal('Vincular Ação', 'Seleção de ação corretiva para o risco não controlado.')">Vincular Ação</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -646,7 +651,7 @@
                             <p class="text-lg font-bold">R$ 232.600</p>
                         </div>
                     </div>
-                    <button class="btn-enterprise btn-enterprise-primary w-full mt-24">Adicionar ao Relatório Executivo</button>
+                    <button class="btn-enterprise btn-enterprise-primary w-full mt-24" onclick="showToast('Simulação anexada ao relatório executivo')">Adicionar ao Relatório Executivo</button>
                 </div>
             </div>
         </section>
@@ -679,7 +684,7 @@
                                 <option>Indústria</option>
                             </select>
                         </div>
-                        <button class="btn-enterprise btn-enterprise-primary mt-12" type="button">Salvar Alterações</button>
+                        <button class="btn-enterprise btn-enterprise-primary mt-12" type="button" onclick="showToast('Configurações salvas')">Salvar Alterações</button>
                     </form>
                 </div>
                 <div class="card-enterprise">
@@ -700,7 +705,7 @@
                     <h1 class="text-2xl font-extrabold">Usuários e Permissões</h1>
                     <p class="text-sm text-gray-medium">Controle quem tem acesso ao painel executivo e quais dados podem visualizar.</p>
                 </div>
-                <button class="btn-enterprise btn-enterprise-primary"><i data-lucide="user-plus"></i> Convidar Usuário</button>
+                <button class="btn-enterprise btn-enterprise-primary" onclick="openFakeModal('Convidar Usuário', 'Formulário de convite e atribuição de permissão.')"><i data-lucide="user-plus"></i> Convidar Usuário</button>
             </div>
             <div class="card-enterprise">
                 <table class="enterprise-table">
@@ -716,21 +721,21 @@
                     <tbody>
                         <tr>
                             <td class="font-bold">João Diretor</td>
-                            <td>joao@matriz.com</td>
+                            <td>joao@example.com</td>
                             <td><span class="badge-risk critical text-9" style="background: var(--primary-navy);">Administrador Global</span></td>
                             <td><span class="badge-risk low text-9">Ativo</span></td>
                             <td><i data-lucide="more-horizontal" class="cursor-pointer"></i></td>
                         </tr>
                         <tr>
                             <td class="font-bold">Maria Silva</td>
-                            <td>maria.rh@matriz.com</td>
+                            <td>maria.rh@example.com</td>
                             <td><span class="badge-risk medium text-9">RH / Gestão</span></td>
                             <td><span class="badge-risk low text-9">Ativo</span></td>
                             <td><i data-lucide="more-horizontal" class="cursor-pointer"></i></td>
                         </tr>
                         <tr>
                             <td class="font-bold">Carlos Jurídico</td>
-                            <td>carlos.juridico@matriz.com</td>
+                            <td>carlos.juridico@example.com</td>
                             <td><span class="badge-risk low text-9" style="background: var(--gray-light); color: var(--gray-dark);">Somente Compliance</span></td>
                             <td><span class="badge-risk medium text-9">Pendente</span></td>
                             <td><i data-lucide="more-horizontal" class="cursor-pointer"></i></td>
@@ -747,7 +752,7 @@
                     <h1 class="text-2xl font-extrabold">Parâmetros de Anonimato</h1>
                     <p class="text-sm text-gray-medium">Configure as travas de segurança para garantir a proteção total (Confiança Radical).</p>
                 </div>
-                <button class="btn-enterprise btn-enterprise-primary">Salvar Parâmetros</button>
+                <button class="btn-enterprise btn-enterprise-primary" onclick="showToast('Parâmetros de governança atualizados')">Salvar Parâmetros</button>
             </div>
             <div class="grid lg-grid-cols-2 gap-24">
                 <div class="card-enterprise">
@@ -758,9 +763,8 @@
                             <p class="text-xs text-gray-medium">Impede exibição de dados se o grupo for menor que o limite.</p>
                         </div>
                         <select class="form-control w-auto">
-                            <option>3 pessoas</option>
-                            <option selected>5 pessoas</option>
-                            <option>10 pessoas</option>
+                            <option>5 pessoas (Modo Avançado)</option>
+                            <option selected>10 pessoas (Recomendado)</option>
                         </select>
                     </div>
                     <div class="flex justify-between items-center py-16 border-bottom">
@@ -780,7 +784,7 @@
                 </div>
                 <div class="card-enterprise bg-ice">
                     <h4 class="font-bold mb-16 text-success"><i data-lucide="shield-check" class="inline"></i> Status de Privacidade Ativo</h4>
-                    <p class="text-sm mb-16">Com as configurações atuais, o sistema garante 100% de impossibilidade técnica de identificação individual dos colaboradores.</p>
+                    <p class="text-sm mb-16">O sistema aplica regras de anonimato, volume mínimo e bloqueio de filtros para mitigação de risco de identificação individual.</p>
                     <div class="p-12 border-radius-sm bg-white border border-gray-light">
                         <p class="text-xs font-bold text-gray-medium">GRUPOS ATUALMENTE PROTEGIDOS (OCULTOS)</p>
                         <p class="text-2xl font-extrabold mt-4">04 Setores</p>
@@ -847,14 +851,14 @@
                         <h4 class="font-bold">Microsoft Teams</h4>
                         <p class="text-xs text-gray-medium mt-4">Envio de alertas de risco e convites para monitoramento via chat.</p>
                     </div>
-                    <button class="btn-enterprise btn-enterprise-outline w-full text-xs">Conectar Integracão</button>
+                    <button class="btn-enterprise btn-enterprise-outline w-full text-xs" onclick="showToast('Simulação de conexão Microsoft Teams iniciada')">Conectar Integração</button>
                 </div>
                 <div class="card-enterprise flex flex-col justify-between">
                     <div class="mb-16">
                         <h4 class="font-bold">Sistema de Folha (API)</h4>
                         <p class="text-xs text-gray-medium mt-4">Importação de dados de absenteísmo e turnover para cálculo de ROI.</p>
                     </div>
-                    <button class="btn-enterprise btn-enterprise-outline w-full text-xs">Configurar Webhook</button>
+                    <button class="btn-enterprise btn-enterprise-outline w-full text-xs" onclick="openFakeModal('Configurar Webhook', 'Painel de configuração do endpoint para recebimento de dados.')">Configurar Webhook</button>
                 </div>
             </div>
         </section>
@@ -883,7 +887,7 @@
                         <input type="text" class="form-control w-auto" value="#030e4f">
                     </div>
                 </div>
-                <button class="btn-enterprise btn-enterprise-primary mt-24">Salvar Personalização</button>
+                <button class="btn-enterprise btn-enterprise-primary mt-24" onclick="showToast('Identidade visual salva')">Salvar Personalização</button>
             </div>
         </section>
 
@@ -900,6 +904,24 @@
 
     <!-- Mobile Overlay -->
     <div id="mobileOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;"></div>
+
+    <!-- Modal Demo -->
+    <div id="fakeModal" class="wm-modal-overlay">
+        <div class="wm-modal-content">
+            <button class="wm-modal-close" onclick="closeFakeModal()"><i data-lucide="x"></i></button>
+            <h3 id="fakeModalTitle" style="font-size: 1.25rem; margin-bottom: 8px;">Título</h3>
+            <p id="fakeModalDesc" style="font-size: 0.875rem; color: var(--gray-medium); margin-bottom: 24px;">Descrição</p>
+            <div class="flex flex-col gap-4">
+                <button class="btn-enterprise btn-enterprise-primary" onclick="closeFakeModal()">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Fake -->
+    <div id="wmToast" class="wm-toast">
+        <i data-lucide="check-circle" style="width: 18px;"></i>
+        <span id="wmToastMsg">Ação executada no protótipo</span>
+    </div>
 
     <script>
         lucide.createIcons();
@@ -927,6 +949,27 @@
                 toggle.classList.toggle('off');
             });
         });
+
+        // Fake Modal Logic
+        function openFakeModal(title, desc) {
+            document.getElementById('fakeModalTitle').innerText = title;
+            document.getElementById('fakeModalDesc').innerText = desc;
+            document.getElementById('fakeModal').classList.add('active');
+        }
+
+        function closeFakeModal() {
+            document.getElementById('fakeModal').classList.remove('active');
+        }
+
+        // Toast Feedback Fake
+        function showToast(msg) {
+            const toast = document.getElementById('wmToast');
+            document.getElementById('wmToastMsg').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
 
         function switchView(viewId) {
             // Remove active from all links

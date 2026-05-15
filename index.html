@@ -139,6 +139,13 @@
         /* Toast Fake */
         .wm-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--wm-color-primary); color: white; padding: 12px 24px; border-radius: var(--wm-radius-full); font-weight: 600; font-size: 0.875rem; z-index: 9999; opacity: 0; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
         .wm-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* Modal Demo */
+        .wm-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(3, 14, 79, 0.5); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        .wm-modal-overlay.active { display: flex; opacity: 1; }
+        .wm-modal-content { background: white; padding: var(--wm-space-8); border-radius: var(--wm-radius-lg); max-width: 400px; width: 90%; box-shadow: var(--wm-shadow-floating); position: relative; transform: translateY(20px); transition: transform 0.3s; }
+        .wm-modal-overlay.active .wm-modal-content { transform: translateY(0); }
+        .wm-modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--wm-color-text-muted); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -162,7 +169,7 @@
                 <a href="#faq">FAQ</a>
             </nav>
             <div class="flex items-center gap-4">
-                <button class="wm-btn wm-btn-primary" onclick="showToast('Abrindo formulário de demonstração no protótipo')">Acessar Demo</button>
+                <button class="wm-btn wm-btn-primary" onclick="openDemoModal()">Acessar Demo</button>
                 <i data-lucide="menu" class="mobile-menu-btn cursor-pointer"></i>
             </div>
         </div>
@@ -178,8 +185,8 @@
                     <p class="wm-hero-subtitle">A WorkMind transforma dados anônimos dos colaboradores em diagnósticos organizacionais, planos de ação, evidências de compliance e impacto mensurável para empresas.</p>
                     
                     <div class="wm-btn-group flex gap-4 items-center">
-                        <a href="#empresas" class="wm-btn wm-btn-primary">Sou Empresa</a>
-                        <a href="#colaboradores" class="wm-btn wm-btn-outline">Sou Colaborador</a>
+                        <button onclick="window.location.href='empresa.html'" class="wm-btn wm-btn-primary">Sou Empresa</button>
+                        <button onclick="window.location.href='colaborador.html'" class="wm-btn wm-btn-outline">Sou Colaborador</button>
                     </div>
                     <p style="font-size: 0.75rem; font-weight: 600; color: var(--wm-color-text-muted); margin-top: var(--wm-space-4);"><i data-lucide="shield-check" style="width: 14px; vertical-align: text-bottom; color: var(--wm-color-success);"></i> Dados agregados, privacidade por desenho e foco em ação preventiva.</p>
                 </div>
@@ -493,6 +500,19 @@
         <span id="wmToastMsg">Ação executada no protótipo</span>
     </div>
 
+    <!-- Modal Demo -->
+    <div id="demoModal" class="wm-modal-overlay">
+        <div class="wm-modal-content">
+            <button class="wm-modal-close" onclick="closeDemoModal()"><i data-lucide="x"></i></button>
+            <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Acessar Demonstração</h3>
+            <p style="font-size: 0.875rem; color: var(--wm-color-text-muted); margin-bottom: 24px;">Escolha qual experiência você deseja visualizar no protótipo. Dados simulados.</p>
+            <div class="flex flex-col gap-4">
+                <button class="wm-btn wm-btn-primary" onclick="window.location.href='empresa.html'">Entrar como Empresa</button>
+                <button class="wm-btn wm-btn-outline" onclick="window.location.href='colaborador.html'">Entrar como Colaborador</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         lucide.createIcons();
 
@@ -529,6 +549,14 @@
                 }
             });
         });
+
+        // Modal Logic
+        function openDemoModal() {
+            document.getElementById('demoModal').classList.add('active');
+        }
+        function closeDemoModal() {
+            document.getElementById('demoModal').classList.remove('active');
+        }
     </script>
 </body>
 </html>

@@ -147,3 +147,43 @@
 
 .section-title { font-size: 1.5rem; margin-bottom: var(--space-4); }
 .section-subtitle { font-size: 0.875rem; color: var(--gray-medium); }
+
+/* Componentes de Demonstração (Demo Mode) */
+.wm-demo-banner {
+    background: var(--warning, #f59e0b);
+    color: white;
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1050; /* Acima da sidebar se for top-level, mas na área principal ela fica sticky acima da topbar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.wm-modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+    background: rgba(3, 14, 79, 0.5); backdrop-filter: blur(4px); 
+    z-index: 2000; display: none; align-items: center; justify-content: center; 
+    opacity: 0; transition: opacity 0.3s;
+}
+.wm-modal-overlay.active { display: flex; opacity: 1; }
+.wm-modal-content { 
+    background: white; padding: var(--space-24); border-radius: var(--radius-lg); 
+    max-width: 400px; width: 90%; box-shadow: var(--shadow-premium); 
+    position: relative; transform: translateY(20px); transition: transform 0.3s; 
+}
+.wm-modal-overlay.active .wm-modal-content { transform: translateY(0); }
+.wm-modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--gray-medium); cursor: pointer; }
+
+.wm-toast { 
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); 
+    background: var(--primary-navy); color: white; padding: 12px 24px; 
+    border-radius: var(--radius-full); font-weight: 600; font-size: 0.875rem; 
+    z-index: 9999; opacity: 0; transition: all 0.3s; display: flex; align-items: center; gap: 8px; 
+}
+.wm-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
