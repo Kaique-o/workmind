@@ -1,0 +1,166 @@
+:root {
+    /* Brand Colors */
+    --primary-navy: #030e4f;
+    --primary-navy-light: #0a1a7a;
+    --accent-orange: #f49f1c;
+    --accent-orange-hover: #e08e10;
+    --bg-ice: #f5f7fa;
+    --gray-light: #d9d9d9;
+    --gray-medium: #8e8e8e;
+    --gray-dark: #333333;
+    
+    /* Semantic Colors */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    
+    /* Typography */
+    --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+    
+    /* Spacing (Mobile Optimized) */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+    
+    /* Radius */
+    --radius-sm: 0.5rem;
+    --radius-md: 1rem;
+    --radius-lg: 1.5rem;
+    --radius-full: 9999px;
+
+    /* Safe Area */
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
+}
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-ice);
+    color: var(--gray-dark);
+    line-height: 1.4;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* MOBILE FIRST UTILITIES */
+.container {
+    width: 100%;
+    padding: 0 var(--spacing-md);
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .container { max-width: 720px; }
+}
+
+@media (min-width: 1024px) {
+    .container { max-width: 1100px; }
+}
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-sm { gap: var(--spacing-sm); }
+.gap-md { gap: var(--spacing-md); }
+
+.grid { display: grid; grid-template-columns: 1fr; gap: var(--spacing-md); }
+
+@media (min-width: 768px) {
+    .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* BUTTONS (Touch Optimized) */
+.btn {
+    min-height: 48px; /* Touch target size */
+    padding: 0 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: transform 0.2s, background 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:active { transform: scale(0.96); }
+
+.btn-primary { background: var(--primary-navy); color: white; }
+.btn-accent { background: var(--accent-orange); color: var(--primary-navy); }
+.btn-outline { background: transparent; border: 2px solid var(--primary-navy); color: var(--primary-navy); }
+.btn-danger { background: var(--danger); color: white; }
+
+/* CARDS */
+.card {
+    background: white;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+/* BOTTOM NAV (Mobile Only) */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    border-top: 1px solid var(--gray-light);
+    display: flex;
+    justify-content: space-around;
+    padding: var(--spacing-xs) 0 calc(var(--spacing-xs) + var(--safe-bottom));
+    z-index: 1000;
+}
+
+@media (min-width: 1024px) {
+    .bottom-nav { display: none; }
+}
+
+.nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--gray-medium);
+    text-decoration: none;
+}
+
+.nav-link.active { color: var(--primary-navy); }
+
+/* SIDEBAR (Desktop Only) */
+.sidebar { display: none; }
+
+@media (min-width: 1024px) {
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        width: 260px;
+        height: 100vh;
+        background: var(--primary-navy);
+        position: fixed;
+        left: 0;
+        top: 0;
+        padding: var(--spacing-xl) var(--spacing-md);
+        color: white;
+    }
+}

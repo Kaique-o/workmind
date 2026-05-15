@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Workmind | Seu Espaço Seguro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* ==========================================================================
+           CSS baseado 100% no gemini-componetes.md (Fonte Única de Verdade)
+           ========================================================================== */
+        
+        :root {
+            --wm-color-primary: #030e4f;
+            --wm-color-accent: #f49f1c;
+            --wm-color-bg: #f5f7fa;
+            --wm-color-surface: #ffffff;
+            --wm-color-border: #d9d9d9;
+            --wm-color-text: #111827;
+            --wm-color-text-muted: #6b7280;
+            --wm-color-success: #16a34a;
+            --wm-color-warning: #f59e0b;
+            --wm-color-danger: #dc2626;
+            --wm-color-info: #2563eb;
+            
+            --wm-radius-sm: 8px;
+            --wm-radius-md: 12px;
+            --wm-radius-lg: 16px;
+            --wm-radius-xl: 24px;
+            --wm-radius-full: 9999px;
+            
+            --wm-shadow-soft: 0 4px 12px rgba(3, 14, 79, 0.05);
+            --wm-shadow-floating: 0 12px 32px rgba(3, 14, 79, 0.15);
+            
+            --wm-space-1: 4px;
+            --wm-space-2: 8px;
+            --wm-space-3: 12px;
+            --wm-space-4: 16px;
+            --wm-space-6: 24px;
+            --wm-space-8: 32px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--wm-color-bg);
+            color: var(--wm-color-text);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        * { box-sizing: border-box; }
+        h1, h2, h3, h4, h5 { margin: 0; color: var(--wm-color-primary); }
+        p { margin: 0; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; font-family: inherit; }
+
+        /* Layout */
+        .wm-app-shell {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-bottom: 80px; 
+        }
+
+        .wm-main-content {
+            flex: 1;
+            padding: var(--wm-space-4);
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .wm-mobile-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--wm-space-4) 0;
+            margin-bottom: var(--wm-space-4);
+        }
+
+        .wm-avatar {
+            width: 40px; height: 40px;
+            border-radius: var(--wm-radius-full);
+            background: var(--wm-color-border);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: var(--wm-color-text-muted);
+        }
+
+        .wm-page-header { margin-bottom: var(--wm-space-6); }
+        .wm-page-title { font-size: 1.5rem; font-weight: 800; margin-bottom: var(--wm-space-1); }
+        .wm-page-subtitle { font-size: 0.875rem; color: var(--wm-color-text-muted); }
+
+        /* Bottom Nav */
+        .wm-bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--wm-color-surface);
+            border-top: 1px solid var(--wm-color-border);
+            display: flex;
+            justify-content: space-around;
+            padding: var(--wm-space-3) 0 calc(var(--wm-space-3) + env(safe-area-inset-bottom));
+            z-index: 900;
+        }
+        .wm-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--wm-color-text-muted);
+            font-size: 0.65rem;
+            font-weight: 600;
+            width: 20%;
+        }
+        .wm-nav-item.active { color: var(--wm-color-primary); }
+        .wm-nav-item i { width: 22px; height: 22px; }
+
+        /* Floating Support Button */
+        .wm-fab-support {
+            position: fixed;
+            bottom: 100px;
+            right: var(--wm-space-4);
+            background-color: var(--wm-color-primary);
+            color: white;
+            border-radius: var(--wm-radius-full);
+            padding: var(--wm-space-3) var(--wm-space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--wm-space-2);
+            font-weight: 700;
+            font-size: 0.875rem;
+            box-shadow: var(--wm-shadow-floating);
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+        .wm-fab-support:active { transform: scale(0.95); }
+
+        /* Cards */
+        .wm-card {
+            background: var(--wm-color-surface);
+            border: 1px solid var(--wm-color-border);
+            border-radius: var(--wm-radius-lg);
+            box-shadow: var(--wm-shadow-soft);
+            padding: var(--wm-space-4);
+            margin-bottom: var(--wm-space-4);
+        }
+
+        .wm-privacy-card {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--wm-space-3);
+            background: #fdfaf3; 
+            border: 1px solid rgba(244, 159, 28, 0.3);
+            border-left: 4px solid var(--wm-color-accent);
+        }
+        .wm-privacy-card h4 { font-size: 0.875rem; color: #b45309; margin-bottom: 2px; }
+        .wm-privacy-card p { font-size: 0.75rem; color: #b45309; opacity: 0.8; }
+
+        /* Badges */
+        .wm-badge-anon {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--wm-color-success);
+            padding: 4px 8px;
+            border-radius: var(--wm-radius-full);
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .wm-badge-pending {
+            display: inline-flex;
+            background: #fee2e2;
+            color: var(--wm-color-danger);
+            padding: 4px 8px;
+            border-radius: var(--wm-radius-full);
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        /* Buttons */
+        .wm-btn {
+            width: 100%;
+            padding: var(--wm-space-3);
+            border-radius: var(--wm-radius-md);
+            font-weight: 700;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--wm-space-2);
+            transition: opacity 0.2s;
+        }
+        .wm-btn-primary { background: var(--wm-color-primary); color: white; }
+        .wm-btn-outline { background: transparent; border: 1px solid var(--wm-color-primary); color: var(--wm-color-primary); }
+        .wm-btn-light { background: var(--wm-color-bg); color: var(--wm-color-primary); border: 1px solid var(--wm-color-border); }
+
+        /* Emotions / Mood Selector */
+        .wm-mood-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--wm-space-2);
+            margin-top: var(--wm-space-4);
+        }
+        .wm-mood-chip {
+            border: 1px solid var(--wm-color-border);
+            border-radius: var(--wm-radius-md);
+            padding: var(--wm-space-2);
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--wm-color-text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .wm-mood-chip i { width: 24px; height: 24px; color: var(--wm-color-text); }
+        .wm-mood-chip.selected {
+            background: var(--wm-color-primary);
+            color: white;
+            border-color: var(--wm-color-primary);
+        }
+        .wm-mood-chip.selected i { color: white; }
+
+        /* Views */
+        .wm-view { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .wm-view.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Flex Utilities */
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: var(--wm-space-2); }
+        .gap-4 { gap: var(--wm-space-4); }
+        .mt-4 { margin-top: var(--wm-space-4); }
+        .mb-2 { margin-bottom: var(--wm-space-2); }
+        .text-center { text-align: center; }
+    </style>
+</head>
+<body>
+
+    <!-- App Shell -->
+    <div class="wm-app-shell">
+
+        <!-- Topbar Mobile -->
+        <div class="wm-main-content pb-0" style="padding-bottom: 0;">
+            <div class="wm-mobile-topbar">
+                <div class="flex items-center gap-2">
+                    <div style="width: 28px; height: 28px; background: var(--wm-color-accent); border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="brain" style="color: var(--wm-color-primary); width: 16px;"></i>
+                    </div>
+                    <span style="font-weight: 800; font-size: 1rem; color: var(--wm-color-primary);">workmind</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div style="position: relative;">
+                        <i data-lucide="bell" style="color: var(--wm-color-text-muted);"></i>
+                        <div style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: var(--wm-color-danger); border-radius: 50%;"></div>
+                    </div>
+                    <div class="wm-avatar">AN</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="wm-main-content pt-0">
+            
+            <!-- VIEW 01: INICIO -->
+            <section id="view-inicio" class="wm-view active">
+                <div class="wm-page-header">
+                    <h1 class="wm-page-title">Olá, este é seu espaço seguro.</h1>
+                    <p class="wm-page-subtitle">Suas respostas individuais não são compartilhadas com a empresa.</p>
+                </div>
+
+                <div class="wm-card wm-privacy-card">
+                    <i data-lucide="lock" class="wm-icon-accent"></i>
+                    <div>
+                        <h4>Privacidade Garantida</h4>
+                        <p>A Workmind transforma respostas anônimas em indicadores coletivos para melhorar o ambiente.</p>
+                    </div>
+                </div>
+
+                <div class="wm-card" style="border-left: 4px solid var(--wm-color-primary);">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="wm-badge-anon"><i data-lucide="shield" style="width: 10px;"></i> Anônimo</span>
+                        <span class="wm-badge-pending">Pendente</span>
+                    </div>
+                    <h3 style="font-size: 1rem; margin-bottom: 4px;">Monitoramento de Saúde Psicossocial</h3>
+                    <p style="font-size: 0.875rem; color: var(--wm-color-text-muted); margin-bottom: var(--wm-space-4);">Sua voz ajuda a construir um ambiente melhor. Leva apenas 3 minutos.</p>
+                    <button class="wm-btn wm-btn-primary" onclick="switchView('monitoramento')">Responder Agora</button>
+                </div>
+
+                <div class="wm-card">
+                    <h3 style="font-size: 1rem; margin-bottom: var(--wm-space-2);">Como você está hoje?</h3>
+                    <p style="font-size: 0.875rem; color: var(--wm-color-text-muted);">Faça seu check-in emocional privado.</p>
+                    <div class="wm-mood-grid">
+                        <div class="wm-mood-chip" onclick="switchView('checkin')">
+                            <i data-lucide="smile"></i> Tranquilo
+                        </div>
+                        <div class="wm-mood-chip" onclick="switchView('checkin')">
+                            <i data-lucide="zap"></i> Motivado
+                        </div>
+                        <div class="wm-mood-chip" onclick="switchView('checkin')">
+                            <i data-lucide="frown"></i> Cansado
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wm-card">
+                    <h3 style="font-size: 0.875rem; color: var(--wm-color-text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; margin-bottom: var(--wm-space-3);">A Empresa Agiu</h3>
+                    <div class="flex items-center gap-4">
+                        <div style="width: 48px; height: 48px; background: var(--wm-color-bg); border-radius: var(--wm-radius-md); display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="message-square" style="color: var(--wm-color-primary);"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-size: 0.875rem; margin-bottom: 2px;">Workshop de Liderança Humanizada</h4>
+                            <p style="font-size: 0.75rem; color: var(--wm-color-text-muted);">Ação concluída. Essa ação ajudou você?</p>
+                        </div>
+                    </div>
+                    <button class="wm-btn wm-btn-light mt-4" style="padding: 8px;">Avaliar de Forma Anônima</button>
+                </div>
+            </section>
+
+            <!-- VIEW 04: CHECK IN EMOCIONAL -->
+            <section id="view-checkin" class="wm-view">
+                <div class="wm-page-header">
+                    <button class="wm-btn wm-btn-light mb-4" style="width: auto; padding: 6px 12px;" onclick="switchView('inicio')">
+                        <i data-lucide="arrow-left" style="width: 16px;"></i> Voltar
+                    </button>
+                    <h1 class="wm-page-title">Check-in Emocional</h1>
+                    <p class="wm-page-subtitle">Um momento só seu. Ninguém na empresa tem acesso a essas informações.</p>
+                </div>
+
+                <div class="wm-card wm-privacy-card">
+                    <i data-lucide="eye-off" class="wm-icon-accent"></i>
+                    <div>
+                        <h4>100% Privado</h4>
+                        <p>Este dado é apenas para o seu acompanhamento pessoal e recomendações.</p>
+                    </div>
+                </div>
+
+                <div class="wm-card">
+                    <h3 style="font-size: 1rem; margin-bottom: var(--wm-space-4);">Qual a emoção predominante hoje?</h3>
+                    <div class="wm-mood-grid">
+                        <div class="wm-mood-chip"><i data-lucide="smile"></i> Tranquilo</div>
+                        <div class="wm-mood-chip"><i data-lucide="zap"></i> Motivado</div>
+                        <div class="wm-mood-chip"><i data-lucide="battery-charging"></i> Produtivo</div>
+                        <div class="wm-mood-chip selected"><i data-lucide="frown"></i> Cansado</div>
+                        <div class="wm-mood-chip"><i data-lucide="alert-circle"></i> Ansioso</div>
+                        <div class="wm-mood-chip"><i data-lucide="cloud-rain"></i> Desanimado</div>
+                    </div>
+                </div>
+
+                <div class="wm-card">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 style="font-size: 1rem;">Nível de Estresse</h3>
+                        <span style="font-weight: 800; color: var(--wm-color-warning);">Alto</span>
+                    </div>
+                    <input type="range" min="1" max="5" value="4" style="width: 100%; margin: var(--wm-space-4) 0;">
+                    <div class="flex justify-between text-muted" style="font-size: 0.75rem; color: var(--wm-color-text-muted);">
+                        <span>Calmo</span>
+                        <span>Limite</span>
+                    </div>
+                </div>
+
+                <button class="wm-btn wm-btn-primary" onclick="switchView('inicio')">Salvar Check-in</button>
+            </section>
+
+            <!-- VIEW 10: MONITORAMENTO (Voz Segura) -->
+            <section id="view-monitoramento" class="wm-view">
+                <div class="wm-page-header">
+                    <h1 class="wm-page-title">Voz Segura</h1>
+                    <p class="wm-page-subtitle">Participe dos monitoramentos e ajude a empresa a tomar decisões com segurança.</p>
+                </div>
+
+                <div class="wm-card">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="wm-badge-anon"><i data-lucide="shield" style="width: 10px;"></i> Anônimo</span>
+                        <span class="wm-badge-pending">Pendente</span>
+                    </div>
+                    <h3 style="font-size: 1rem; margin-bottom: 4px;">Riscos Psicossociais (NR 01)</h3>
+                    <p style="font-size: 0.875rem; color: var(--wm-color-text-muted); margin-bottom: var(--wm-space-4);">Avaliação oficial para mapear o bem-estar coletivo.</p>
+                    
+                    <div style="background: var(--wm-color-bg); border-radius: var(--wm-radius-sm); padding: var(--wm-space-2) var(--wm-space-3); display: flex; align-items: center; gap: var(--wm-space-2); margin-bottom: var(--wm-space-4);">
+                        <i data-lucide="clock" style="width: 14px; color: var(--wm-color-text-muted);"></i>
+                        <span style="font-size: 0.75rem; font-weight: 600;">Leva ~3 minutos. Vence amanhã.</span>
+                    </div>
+
+                    <button class="wm-btn wm-btn-primary">Iniciar Pesquisa</button>
+                </div>
+
+                <div class="wm-card wm-privacy-card">
+                    <i data-lucide="lock" class="wm-icon-accent"></i>
+                    <div>
+                        <h4>Garantia de Confiança Radical</h4>
+                        <p>Se um grupo/setor tiver menos de 5 respostas, a Workmind oculta os dados para evitar qualquer tipo de identificação por eliminação.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 18: APOIO IMEDIATO -->
+            <section id="view-apoio" class="wm-view">
+                <div class="wm-page-header">
+                    <h1 class="wm-page-title">Apoio Emocional</h1>
+                    <p class="wm-page-subtitle">Seja qual for o momento, nós estamos aqui para ajudar você a passar por isso.</p>
+                </div>
+
+                <div class="wm-card" style="background: #fef2f2; border-color: #fee2e2;">
+                    <h3 style="font-size: 1rem; color: var(--wm-color-danger); margin-bottom: 4px;"><i data-lucide="alert-triangle" style="width: 18px; display: inline-block; vertical-align: text-bottom;"></i> Precisa de ajuda urgente?</h3>
+                    <p style="font-size: 0.875rem; color: var(--wm-color-text-muted); margin-bottom: var(--wm-space-4);">Se você está em risco imediato, procure ajuda profissional agora.</p>
+                    <button class="wm-btn" style="background: white; border: 1px solid var(--wm-color-danger); color: var(--wm-color-danger);">Ver Contatos de Emergência (CVV)</button>
+                </div>
+
+                <h3 style="font-size: 0.875rem; color: var(--wm-color-text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; margin: var(--wm-space-6) 0 var(--wm-space-3);">Como podemos ajudar agora?</h3>
+
+                <div class="wm-card flex items-center justify-between cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div style="width: 40px; height: 40px; background: var(--wm-color-bg); border-radius: var(--wm-radius-full); display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="message-circle" style="color: var(--wm-color-primary);"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-size: 0.875rem;">Conversa de Acolhimento</h4>
+                            <p style="font-size: 0.75rem; color: var(--wm-color-text-muted);">Bate-papo seguro para desabafar.</p>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-right" style="color: var(--wm-color-border);"></i>
+                </div>
+
+                <div class="wm-card flex items-center justify-between cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div style="width: 40px; height: 40px; background: var(--wm-color-bg); border-radius: var(--wm-radius-full); display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="users" style="color: var(--wm-color-primary);"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-size: 0.875rem;">Atendimento Especializado</h4>
+                            <p style="font-size: 0.75rem; color: var(--wm-color-text-muted);">Encontre um profissional ideal para você.</p>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-right" style="color: var(--wm-color-border);"></i>
+                </div>
+
+                <div class="wm-card flex items-center justify-between cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div style="width: 40px; height: 40px; background: var(--wm-color-bg); border-radius: var(--wm-radius-full); display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="wind" style="color: var(--wm-color-primary);"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-size: 0.875rem;">Pausa Guiada (3 min)</h4>
+                            <p style="font-size: 0.75rem; color: var(--wm-color-text-muted);">Exercício de respiração para acalmar.</p>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-right" style="color: var(--wm-color-border);"></i>
+                </div>
+            </section>
+
+            <!-- VIEW 30: PRIVACIDADE -->
+            <section id="view-privacidade" class="wm-view">
+                <div class="wm-page-header">
+                    <h1 class="wm-page-title">Transparência</h1>
+                    <p class="wm-page-subtitle">Entenda exatamente como protegemos sua identidade na plataforma.</p>
+                </div>
+
+                <div class="wm-card">
+                    <h3 style="font-size: 1rem; color: var(--wm-color-success); margin-bottom: var(--wm-space-2);"><i data-lucide="shield-check" style="vertical-align: text-bottom;"></i> O que a Empresa NÃO VÊ</h3>
+                    <ul style="padding-left: 20px; font-size: 0.875rem; color: var(--wm-color-text-muted); line-height: 1.6;">
+                        <li>Suas respostas individuais aos monitoramentos.</li>
+                        <li>Seu histórico de check-ins emocionais.</li>
+                        <li>Quais conteúdos ou trilhas você acessou.</li>
+                        <li>Seus pedidos de apoio imediato.</li>
+                    </ul>
+                </div>
+
+                <div class="wm-card">
+                    <h3 style="font-size: 1rem; margin-bottom: var(--wm-space-2);"><i data-lucide="bar-chart" style="vertical-align: text-bottom; color: var(--wm-color-primary);"></i> O que a Empresa VÊ</h3>
+                    <p style="font-size: 0.875rem; color: var(--wm-color-text-muted); margin-bottom: var(--wm-space-4);">A empresa acessa apenas <strong>dados coletivos e anônimos</strong>, consolidados por setor ou unidade.</p>
+                    <div style="background: var(--wm-color-bg); padding: var(--wm-space-3); border-radius: var(--wm-radius-sm); font-size: 0.75rem; font-weight: 600; color: var(--wm-color-primary); text-align: center;">
+                        "O nível médio de estresse no setor Comercial aumentou 12% este mês."
+                    </div>
+                </div>
+
+                <button class="wm-btn wm-btn-light">Ver Política de Privacidade Completa</button>
+            </section>
+
+        </main>
+
+        <!-- Floating Support Button -->
+        <button class="wm-fab-support" onclick="switchView('apoio')">
+            <i data-lucide="life-buoy"></i> Preciso de Apoio
+        </button>
+
+        <!-- Bottom Navigation -->
+        <nav class="wm-bottom-nav">
+            <a href="#" class="wm-nav-item active" data-target="inicio">
+                <i data-lucide="home"></i>
+                <span>Início</span>
+            </a>
+            <a href="#" class="wm-nav-item" data-target="monitoramento">
+                <i data-lucide="mic"></i>
+                <span>Voz Segura</span>
+            </a>
+            <a href="#" class="wm-nav-item" data-target="checkin">
+                <i data-lucide="heart-pulse"></i>
+                <span>Cuidado</span>
+            </a>
+            <a href="#" class="wm-nav-item" data-target="apoio">
+                <i data-lucide="life-buoy"></i>
+                <span>Apoio</span>
+            </a>
+            <a href="#" class="wm-nav-item" data-target="privacidade">
+                <i data-lucide="user"></i>
+                <span>Conta</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Mobile Routing Logic
+        const navItems = document.querySelectorAll('.wm-nav-item');
+        const views = document.querySelectorAll('.wm-view');
+
+        function switchView(viewId) {
+            // Update Active Nav
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-target') === viewId) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Hide all views, show target
+            views.forEach(view => view.classList.remove('active'));
+            const target = document.getElementById('view-' + viewId);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo(0, 0);
+            }
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchView(item.getAttribute('data-target'));
+            });
+        });
+
+        // Mood Chips interaction
+        document.querySelectorAll('.wm-mood-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                // If it's on the checkin page, allow selection
+                if(this.closest('#view-checkin')) {
+                    document.querySelectorAll('#view-checkin .wm-mood-chip').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

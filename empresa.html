@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Workmind Intel | Executive Cockpit</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --topbar-height: 64px;
+        }
+
+        body { 
+            background-color: var(--bg-ice); 
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--primary-navy);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+        }
+
+        .sidebar-brand {
+            padding: var(--space-24);
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-16) var(--space-12);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
+        }
+
+        .nav-group { margin-bottom: var(--space-24); }
+        .nav-group-title {
+            font-size: 10px;
+            font-weight: 800;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-8);
+            padding-left: var(--space-12);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            padding: 10px var(--space-12);
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.875rem;
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
+            margin-bottom: 2px;
+        }
+        .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-link.active { background: var(--accent-orange); color: var(--primary-navy); font-weight: 700; }
+        .nav-link.active i { color: var(--primary-navy); }
+
+        /* Main Content Area */
+        .main-wrapper {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        @media (max-width: 1024px) {
+            .main-wrapper { margin-left: 0; width: 100%; }
+        }
+
+        /* Topbar */
+        .topbar {
+            height: var(--topbar-height);
+            background: white;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-24);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .company-switcher {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+            padding: 6px 12px;
+            border-radius: var(--radius-md);
+            background: var(--bg-ice);
+            cursor: pointer;
+            border: 1px solid var(--gray-light);
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-16);
+        }
+
+        .search-box {
+            background: var(--bg-ice);
+            border-radius: var(--radius-md);
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+            border: 1px solid var(--gray-light);
+            width: 240px;
+        }
+        .search-box input { border: none; background: transparent; width: 100%; font-size: 0.875rem; outline: none; }
+
+        .user-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--accent-orange);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; color: var(--primary-navy);
+            cursor: pointer;
+        }
+
+        /* App Sections */
+        .app-view { display: none; padding: var(--space-24); }
+        .app-view.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Components */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-32);
+        }
+
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-24);
+        }
+
+        /* Responsive */
+        .mobile-toggle { display: none; cursor: pointer; }
+        @media (max-width: 1024px) {
+            .mobile-toggle { display: block; }
+            .page-header { flex-direction: column; gap: var(--space-16); }
+        }
+
+        .kanban-view {
+            display: flex;
+            gap: var(--space-16);
+            overflow-x: auto;
+            padding-bottom: var(--space-24);
+        }
+        .kanban-column {
+            flex: 0 0 320px;
+            background: #f1f5f9;
+            border-radius: var(--radius-lg);
+            padding: var(--space-16);
+            min-height: 500px;
+        }
+        .kanban-title { font-size: 11px; font-weight: 800; color: var(--gray-medium); margin-bottom: var(--space-16); text-transform: uppercase; }
+
+        /* Table */
+        .enterprise-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .enterprise-table th { text-align: left; padding: var(--space-12); border-bottom: 2px solid var(--bg-ice); color: var(--gray-medium); font-weight: 700; }
+        .enterprise-table td { padding: var(--space-16) var(--space-12); border-bottom: 1px solid var(--gray-light); }
+
+        .form-group {
+            margin-bottom: var(--space-16);
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--gray-medium);
+            margin-bottom: var(--space-8);
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.875rem;
+        }
+        
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: var(--success);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .toggle-switch.off { background: var(--gray-light); }
+        .toggle-switch.off::after { transform: translateX(-20px); }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div style="width: 32px; height: 32px; background: var(--accent-orange); border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="brain" style="color: var(--primary-navy); width: 18px;"></i>
+            </div>
+            <span class="font-bold text-lg">Workmind Intel</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- INICIO -->
+            <div class="nav-group">
+                <div class="nav-group-title">Início</div>
+                <a href="#" class="nav-link active" data-view="inicio-visao"><i data-lucide="layout-dashboard"></i> Visão Geral</a>
+                <a href="#" class="nav-link" data-view="inicio-pendencias"><i data-lucide="check-square"></i> Pendências</a>
+                <a href="#" class="nav-link" data-view="inicio-alertas"><i data-lucide="bell-alert"></i> Alertas Prioritários</a>
+            </div>
+
+            <!-- DIAGNOSTICO -->
+            <div class="nav-group">
+                <div class="nav-group-title">Diagnóstico</div>
+                <a href="#" class="nav-link" data-view="diag-saude"><i data-lucide="heart-pulse"></i> Saúde Psicossocial</a>
+                <a href="#" class="nav-link" data-view="diag-mapa"><i data-lucide="map"></i> Mapa de Riscos</a>
+                <a href="#" class="nav-link" data-view="diag-monitoramentos"><i data-lucide="activity"></i> Monitoramentos</a>
+            </div>
+
+            <!-- ACOES -->
+            <div class="nav-group">
+                <div class="nav-group-title">Ações</div>
+                <a href="#" class="nav-link" data-view="acoes-plano"><i data-lucide="kanban"></i> Plano de Ação</a>
+                <a href="#" class="nav-link" data-view="acoes-intervencoes"><i data-lucide="library"></i> Intervenções</a>
+            </div>
+
+            <!-- COMPLIANCE -->
+            <div class="nav-group">
+                <div class="nav-group-title">Compliance</div>
+                <a href="#" class="nav-link" data-view="comp-nr01"><i data-lucide="shield-check"></i> NR 01 (GRO)</a>
+                <a href="#" class="nav-link" data-view="comp-evidencias"><i data-lucide="file-check"></i> Evidências</a>
+            </div>
+
+            <!-- IMPACTO -->
+            <div class="nav-group">
+                <div class="nav-group-title">Impacto</div>
+                <a href="#" class="nav-link" data-view="imp-organizacional"><i data-lucide="line-chart"></i> Impacto Organizacional</a>
+                <a href="#" class="nav-link" data-view="imp-simulador"><i data-lucide="calculator"></i> Simulador de ROI</a>
+            </div>
+
+            <!-- COMUNICACAO -->
+            <div class="nav-group">
+                <div class="nav-group-title">Comunicação</div>
+                <a href="#" class="nav-link" data-view="com-campanhas"><i data-lucide="megaphone"></i> Campanhas Internas</a>
+                <a href="#" class="nav-link" data-view="com-devolutivas"><i data-lucide="message-square-reply"></i> Central de Devolutivas</a>
+            </div>
+
+            <!-- ADMINISTRACAO -->
+            <div class="nav-group">
+                <div class="nav-group-title">Administração</div>
+                <a href="#" class="nav-link" data-view="adm-empresa"><i data-lucide="building-2"></i> Empresa</a>
+                <a href="#" class="nav-link" data-view="adm-usuarios"><i data-lucide="users-2"></i> Usuários e Permissões</a>
+                <a href="#" class="nav-link" data-view="adm-anonimato"><i data-lucide="eye-off"></i> Parâmetros de Anonimato</a>
+                <a href="#" class="nav-link" data-view="adm-notificacoes"><i data-lucide="bell-ring"></i> Notificações do App</a>
+                <a href="#" class="nav-link" data-view="adm-acessibilidade"><i data-lucide="accessibility"></i> Acessibilidade</a>
+                <a href="#" class="nav-link" data-view="adm-integracoes"><i data-lucide="blocks"></i> Integrações Fake</a>
+                <a href="#" class="nav-link" data-view="adm-design"><i data-lucide="palette"></i> Design e Marca</a>
+                <a href="#" class="nav-link" data-view="adm-config"><i data-lucide="settings"></i> Preferências do Sistema</a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="flex items-center gap-md">
+                <i data-lucide="menu" class="mobile-toggle" id="menuToggle"></i>
+                <div class="company-switcher">
+                    <div style="width: 24px; height: 24px; background: var(--primary-navy); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 800;">MC</div>
+                    <span class="text-xs font-bold">Matriz Corporation</span>
+                    <i data-lucide="chevron-down" style="width: 14px;"></i>
+                </div>
+                <div class="search-box">
+                    <i data-lucide="search" style="width: 14px; color: var(--gray-medium);"></i>
+                    <input type="text" placeholder="Buscar risco, ação, setor...">
+                </div>
+            </div>
+
+            <div class="topbar-actions">
+                <button class="btn-enterprise btn-enterprise-primary" style="min-height: 36px; font-size: 11px; padding: 0 16px;"><i data-lucide="plus"></i> Criar Ação</button>
+                <div style="position: relative; cursor: pointer;">
+                    <i data-lucide="bell" style="width: 20px;"></i>
+                    <span style="position: absolute; top: -4px; right: -4px; background: var(--risk-high); color: white; border-radius: 50%; width: 14px; height: 14px; font-size: 9px; display: flex; align-items: center; justify-content: center; border: 2px solid white;">3</span>
+                </div>
+                <div class="user-avatar" title="João Diretor">JD</div>
+            </div>
+        </header>
+
+        <!-- ========================================== -->
+        <!-- VIEW SECTIONS -->
+        <!-- ========================================== -->
+
+        <!-- 01 INICIO: VISÃO GERAL -->
+        <section id="view-inicio-visao" class="app-view active">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Visão Geral</h1>
+                    <p class="text-sm text-gray-medium">Acompanhe riscos psicossociais, compliance NR 01, ações e impacto organizacional.</p>
+                </div>
+                <div class="flex gap-sm">
+                    <button class="btn-enterprise btn-enterprise-outline" style="min-height: 36px;"><i data-lucide="download"></i> Gerar Relatório Executivo</button>
+                </div>
+            </div>
+
+            <!-- Smart Banner -->
+            <div class="card-enterprise mb-24" style="background: #fef2f2; border: 1px solid #fee2e2; border-left: 6px solid var(--risk-critical);">
+                <div class="flex items-center gap-md">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="alert-triangle" class="text-risk-critical"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <p class="text-xs font-bold text-risk-critical">RISCO PRIORITÁRIO DETECTADO</p>
+                        <h4 class="text-sm font-bold">Comercial apresentou aumento de 23% em sinais de sobrecarga nos últimos 30 dias.</h4>
+                    </div>
+                    <div class="flex gap-sm">
+                        <button class="btn-enterprise btn-enterprise-primary text-xs" style="min-height: 32px;" onclick="switchView('acoes-plano')">Criar Intervenção</button>
+                        <button class="btn-enterprise btn-enterprise-outline text-xs" style="min-height: 32px; border-color: var(--risk-critical); color: var(--risk-critical);">Ver Detalhe do Risco</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-row">
+                <div class="card-enterprise">
+                    <p class="text-xs font-bold text-gray-medium">SCORE WORKMIND</p>
+                    <div class="text-3xl font-extrabold mt-4">78.4</div>
+                    <div class="text-xs font-bold text-warning mt-8"><i data-lucide="trending-down" style="width: 12px;"></i> -2.4% maturidade organizacional</div>
+                </div>
+                <div class="card-enterprise">
+                    <p class="text-xs font-bold text-gray-medium">RISCO GERAL</p>
+                    <div class="text-2xl font-extrabold mt-4 text-risk-medium">MÉDIO</div>
+                    <div class="text-xs font-bold text-risk-medium mt-8">Prioridade Executiva Ativa</div>
+                </div>
+                <div class="card-enterprise">
+                    <p class="text-xs font-bold text-gray-medium">CONFORMIDADE NR 01</p>
+                    <div class="text-3xl font-extrabold mt-4">86%</div>
+                    <div class="text-xs font-bold text-success mt-8"><i data-lucide="check" style="width: 12px;"></i> Adequação em andamento</div>
+                </div>
+                <div class="card-enterprise">
+                    <p class="text-xs font-bold text-gray-medium">ECONOMIA POTENCIAL</p>
+                    <div class="text-2xl font-extrabold mt-4 text-risk-low">R$ 125k</div>
+                    <div class="text-xs font-bold text-success mt-8">ROI Estimado (Turnover Evitado)</div>
+                </div>
+            </div>
+
+            <div class="grid lg-grid-cols-2 gap-24">
+                <div class="card-enterprise">
+                    <h4 class="font-bold mb-16">Top Riscos em Alerta</h4>
+                    <div class="flex flex-col gap-12">
+                        <div class="p-12 border-radius-md bg-ice flex justify-between items-center border-left-4" style="border-left: 4px solid var(--risk-critical);">
+                            <div>
+                                <p class="text-xs font-bold">Sobrecarga (Comercial)</p>
+                                <p class="text-xs text-risk-critical mt-4">Ação recomendada pendente</p>
+                            </div>
+                            <span class="badge-risk critical">CRÍTICO</span>
+                        </div>
+                        <div class="p-12 border-radius-md bg-ice flex justify-between items-center border-left-4" style="border-left: 4px solid var(--risk-high);">
+                            <div>
+                                <p class="text-xs font-bold">Baixa Segurança Psi (Financeiro)</p>
+                                <p class="text-xs text-gray-medium mt-4">Intervenção de Liderança Sugerida</p>
+                            </div>
+                            <span class="badge-risk high">ALTO</span>
+                        </div>
+                        <div class="p-12 border-radius-md bg-ice flex justify-between items-center border-left-4" style="border-left: 4px solid var(--risk-high);">
+                            <div>
+                                <p class="text-xs font-bold">Pressão Excessiva (Atendimento)</p>
+                                <p class="text-xs text-gray-medium mt-4">Aguardando mapeamento NR 01</p>
+                            </div>
+                            <span class="badge-risk high">ALTO</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-enterprise">
+                    <h4 class="font-bold mb-16">Ações Pendentes (Pipeline)</h4>
+                    <div class="flex flex-col gap-12">
+                        <div class="p-12 border-radius-md bg-ice flex justify-between items-center">
+                            <div>
+                                <span class="badge-risk critical mb-8 text-9">ATRASADA</span>
+                                <p class="text-sm font-bold">Revisar fluxo de metas Comerciais</p>
+                                <p class="text-xs text-gray-medium">Responsável: João Diretor</p>
+                            </div>
+                            <button class="btn-enterprise btn-enterprise-outline text-xs p-4" style="min-height: 28px;">Concluir</button>
+                        </div>
+                        <div class="p-12 border-radius-md bg-ice flex justify-between items-center">
+                            <div>
+                                <span class="badge-risk medium mb-8 text-9">EM ANDAMENTO</span>
+                                <p class="text-sm font-bold">Workshop de Liderança Humanizada</p>
+                                <p class="text-xs text-gray-medium">Responsável: RH</p>
+                            </div>
+                            <span class="text-xs font-bold text-accent">50%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 02 INICIO: MINHAS PENDENCIAS -->
+        <section id="view-inicio-pendencias" class="app-view">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Minhas Pendências</h1>
+                    <p class="text-sm text-gray-medium">Gerencie suas tarefas, aprovações e responsabilidades no sistema.</p>
+                </div>
+            </div>
+            <div class="card-enterprise">
+                <div class="flex gap-sm mb-16 border-bottom pb-12">
+                    <span class="text-xs font-bold bg-navy text-white px-12 py-4 border-radius-sm">Todas (3)</span>
+                    <span class="text-xs font-bold text-gray-medium px-12 py-4">Atrasadas (1)</span>
+                    <span class="text-xs font-bold text-gray-medium px-12 py-4">Compliance NR 01</span>
+                </div>
+                <div class="flex flex-col gap-12">
+                    <!-- Task Item -->
+                    <div class="flex justify-between items-center p-16 border border-gray-light border-radius-md">
+                        <div class="flex gap-md items-center">
+                            <input type="checkbox" style="width: 18px; height: 18px;">
+                            <div>
+                                <div class="flex gap-sm items-center mb-4">
+                                    <span class="badge-risk critical text-9">URGENTE</span>
+                                    <span class="text-xs text-gray-medium">Ação Corretiva</span>
+                                </div>
+                                <p class="text-sm font-bold">Revisar insight crítico de sobrecarga no Comercial</p>
+                                <p class="text-xs text-gray-medium mt-4">Vencimento: Hoje</p>
+                            </div>
+                        </div>
+                        <button class="btn-enterprise btn-enterprise-outline text-xs" style="min-height: 32px;">Abrir Item</button>
+                    </div>
+                    <!-- Task Item -->
+                    <div class="flex justify-between items-center p-16 border border-gray-light border-radius-md">
+                        <div class="flex gap-md items-center">
+                            <input type="checkbox" style="width: 18px; height: 18px;">
+                            <div>
+                                <div class="flex gap-sm items-center mb-4">
+                                    <span class="badge-risk medium text-9">MÉDIA</span>
+                                    <span class="text-xs text-gray-medium">Compliance NR 01</span>
+                                </div>
+                                <p class="text-sm font-bold">Anexar evidência do Treinamento de Liderança</p>
+                                <p class="text-xs text-gray-medium mt-4">Vencimento: Amanhã</p>
+                            </div>
+                        </div>
+                        <button class="btn-enterprise btn-enterprise-outline text-xs" style="min-height: 32px;">Anexar Arquivo</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 14 ACOES: PLANO DE ACAO -->
+        <section id="view-acoes-plano" class="app-view">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Plano de Intervenção</h1>
+                    <p class="text-sm text-gray-medium">Acompanhe a execução das ações estratégicas para mitigação de riscos.</p>
+                </div>
+                <button class="btn-enterprise btn-enterprise-primary"><i data-lucide="plus"></i> Criar Nova Ação</button>
+            </div>
+            
+            <!-- Kanban Board -->
+            <div class="kanban-view">
+                <div class="kanban-column">
+                    <div class="kanban-title">Sugeridas pela IA (2)</div>
+                    <div class="card-enterprise mb-12 p-12 border-left-4" style="border-left: 4px solid var(--risk-critical);">
+                        <span class="badge-risk critical text-9 mb-8">IA INSIGHT</span>
+                        <h5 class="text-sm font-bold">Adequação de Metas Comerciais</h5>
+                        <p class="text-xs mt-4 text-gray-medium">Origem: Risco de Sobrecarga (Comercial)</p>
+                        <button class="btn-enterprise btn-enterprise-outline text-xs mt-12 w-full" style="min-height: 28px;">Priorizar Ação</button>
+                    </div>
+                </div>
+                <div class="kanban-column">
+                    <div class="kanban-title">Priorizadas / A Fazer (1)</div>
+                    <div class="card-enterprise mb-12 p-12" style="border-left: 3px solid var(--gray-medium);">
+                        <h5 class="text-sm font-bold">Campanha de Segurança Psicológica</h5>
+                        <p class="text-xs mt-4 text-gray-medium">Responsável: RH</p>
+                        <span class="badge-risk medium mt-12">Prazo: 15 Jun</span>
+                    </div>
+                </div>
+                <div class="kanban-column">
+                    <div class="kanban-title">Em Andamento (1)</div>
+                    <div class="card-enterprise mb-12 p-12" style="border-left: 3px solid var(--accent-orange);">
+                        <h5 class="text-sm font-bold">Workshop de Liderança</h5>
+                        <p class="text-xs mt-4 text-gray-medium">Responsável: João Diretor</p>
+                        <div class="mt-12 w-full bg-gray-light border-radius-sm" style="height: 6px;"><div class="bg-accent h-full border-radius-sm" style="width: 50%;"></div></div>
+                    </div>
+                </div>
+                <div class="kanban-column">
+                    <div class="kanban-title">Concluídas / Feedback (1)</div>
+                    <div class="card-enterprise mb-12 p-12" style="border-left: 3px solid var(--success);">
+                        <h5 class="text-sm font-bold">Canal de Apoio Psicológico</h5>
+                        <p class="text-xs mt-4 text-gray-medium">Aguardando avaliação dos colaboradores</p>
+                        <button class="btn-enterprise btn-enterprise-outline text-xs mt-12 w-full" style="min-height: 28px;"><i data-lucide="message-square"></i> Ver Feedback</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 20 COMPLIANCE: NR 01 -->
+        <section id="view-comp-nr01" class="app-view">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Compliance NR 01 (GRO)</h1>
+                    <p class="text-sm text-gray-medium">Central de evidências e inventário de riscos psicossociais para o PGR.</p>
+                </div>
+                <button class="btn-enterprise btn-enterprise-primary"><i data-lucide="file-check"></i> Gerar Pacote de Auditoria</button>
+            </div>
+
+            <div class="card-enterprise">
+                <h4 class="font-bold mb-16">Checklist Obrigatório de Conformidade</h4>
+                <table class="enterprise-table">
+                    <thead>
+                        <tr>
+                            <th>Etapa do GRO</th>
+                            <th>Status</th>
+                            <th>Riscos Mapeados</th>
+                            <th>Evidência Principal</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Identificação de Perigos Psicossociais</strong></td>
+                            <td><span class="badge-risk low">CONFORME</span></td>
+                            <td>12 Identificados</td>
+                            <td><a href="#" class="text-primary text-xs font-bold underline">Inventario_Risco_2026.pdf</a></td>
+                            <td><i data-lucide="more-horizontal" class="cursor-pointer"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Avaliação de Riscos (PxS)</strong></td>
+                            <td><span class="badge-risk low">CONFORME</span></td>
+                            <td>100% Classificados</td>
+                            <td><a href="#" class="text-primary text-xs font-bold underline">Matriz_ISO45003.xlsx</a></td>
+                            <td><i data-lucide="more-horizontal" class="cursor-pointer"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Plano de Ação Preventiva</strong></td>
+                            <td><span class="badge-risk high">ATENÇÃO</span></td>
+                            <td>3 Sem Medida de Controle</td>
+                            <td><span class="text-xs text-gray-medium italic">Plano Incompleto</span></td>
+                            <td><button class="btn-enterprise btn-enterprise-outline p-4 text-xs">Vincular Ação</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 28 IMPACTO: SIMULADOR DE ROI -->
+        <section id="view-imp-simulador" class="app-view">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Simulador de Impacto e ROI</h1>
+                    <p class="text-sm text-gray-medium">Projete a economia financeira gerada pela redução de riscos psicossociais.</p>
+                </div>
+            </div>
+            <div class="grid lg-grid-cols-2 gap-24">
+                <div class="card-enterprise">
+                    <h4 class="font-bold mb-16">Premissas da Organização</h4>
+                    <div class="form-group">
+                        <label>Número de Colaboradores</label>
+                        <input type="number" class="form-control" value="500">
+                    </div>
+                    <div class="form-group">
+                        <label>Custo Médio Mensal (Salário + Encargos)</label>
+                        <input type="number" class="form-control" value="8500">
+                    </div>
+                    <div class="form-group">
+                        <label>Taxa de Turnover Anual (%)</label>
+                        <input type="number" class="form-control" value="18">
+                    </div>
+                    <div class="form-group">
+                        <label>Meta de Redução de Risco (%)</label>
+                        <input type="range" class="w-full mt-8" min="0" max="50" value="15">
+                        <p class="text-xs text-center font-bold text-primary mt-4">15%</p>
+                    </div>
+                </div>
+                <div class="card-enterprise text-center flex flex-col justify-center" style="background: var(--primary-navy); color: white;">
+                    <p class="text-xs font-bold opacity-60">ECONOMIA POTENCIAL ANUAL ESTIMADA</p>
+                    <div class="text-5xl font-extrabold text-accent mt-12 mb-24">R$ 642.600</div>
+                    
+                    <div class="grid grid-cols-2 gap-16 text-left border-top pt-24 mt-auto" style="border-color: rgba(255,255,255,0.1);">
+                        <div>
+                            <p class="text-xs opacity-60">Economia em Rescisões</p>
+                            <p class="text-lg font-bold">R$ 410.000</p>
+                        </div>
+                        <div>
+                            <p class="text-xs opacity-60">Ganho Produtivo (Absenteísmo)</p>
+                            <p class="text-lg font-bold">R$ 232.600</p>
+                        </div>
+                    </div>
+                    <button class="btn-enterprise btn-enterprise-primary w-full mt-24">Adicionar ao Relatório Executivo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 36 ADM: EMPRESA -->
+        <section id="view-adm-empresa" class="app-view">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Configurações da Empresa</h1>
+                    <p class="text-sm text-gray-medium">Gerencie os dados institucionais e o plano da sua organização.</p>
+                </div>
+            </div>
+            <div class="grid lg-grid-cols-2 gap-24">
+                <div class="card-enterprise">
+                    <h4 class="font-bold mb-16">Dados da Organização</h4>
+                    <form>
+                        <div class="form-group">
+                            <label>Razão Social</label>
+                            <input type="text" value="Matriz Corporation SA" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>CNPJ Fake</label>
+                            <input type="text" value="12.345.678/0001-90" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Segmento</label>
+                            <select class="form-control">
+                                <option>Tecnologia</option>
+                                <option>Varejo</option>
+                                <option>Indústria</option>
+                            </select>
+                        </div>
+                        <button class="btn-enterprise btn-enterprise-primary mt-12" type="button">Salvar Alterações</button>
+                    </form>
+                </div>
+                <div class="card-enterprise">
+                    <h4 class="font-bold mb-16">Plano Atual (Mock)</h4>
+                    <div class="p-16 border-radius-md bg-ice mb-16" style="border-left: 4px solid var(--primary-navy);">
+                        <p class="text-xs font-bold text-primary">WORKMIND ENTERPRISE</p>
+                        <p class="text-2xl font-extrabold mt-4">Ativo</p>
+                        <p class="text-sm text-gray-medium mt-4">Até 10.000 colaboradores. Recursos avançados de IA e NR 01 liberados.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 37 ADM: USUARIOS E PERMISSOES -->
+        <section id="view-adm-usuarios" class="app-view">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Usuários e Permissões</h1>
+                    <p class="text-sm text-gray-medium">Controle quem tem acesso ao painel executivo e quais dados podem visualizar.</p>
+                </div>
+                <button class="btn-enterprise btn-enterprise-primary"><i data-lucide="user-plus"></i> Convidar Usuário</button>
+            </div>
+            <div class="card-enterprise">
+                <table class="enterprise-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Perfil de Acesso</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-bold">João Diretor</td>
+                            <td>joao@matriz.com</td>
+                            <td><span class="badge-risk critical text-9" style="background: var(--primary-navy);">Administrador Global</span></td>
+                            <td><span class="badge-risk low text-9">Ativo</span></td>
+                            <td><i data-lucide="more-horizontal" class="cursor-pointer"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">Maria Silva</td>
+                            <td>maria.rh@matriz.com</td>
+                            <td><span class="badge-risk medium text-9">RH / Gestão</span></td>
+                            <td><span class="badge-risk low text-9">Ativo</span></td>
+                            <td><i data-lucide="more-horizontal" class="cursor-pointer"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">Carlos Jurídico</td>
+                            <td>carlos.juridico@matriz.com</td>
+                            <td><span class="badge-risk low text-9" style="background: var(--gray-light); color: var(--gray-dark);">Somente Compliance</span></td>
+                            <td><span class="badge-risk medium text-9">Pendente</span></td>
+                            <td><i data-lucide="more-horizontal" class="cursor-pointer"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 39 ADM: ANONIMATO E GOVERNANÇA -->
+        <section id="view-adm-anonimato" class="app-view">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Parâmetros de Anonimato</h1>
+                    <p class="text-sm text-gray-medium">Configure as travas de segurança para garantir a proteção total (Confiança Radical).</p>
+                </div>
+                <button class="btn-enterprise btn-enterprise-primary">Salvar Parâmetros</button>
+            </div>
+            <div class="grid lg-grid-cols-2 gap-24">
+                <div class="card-enterprise">
+                    <h4 class="font-bold mb-16">Regras de Proteção de Dados</h4>
+                    <div class="flex justify-between items-center py-16 border-bottom">
+                        <div>
+                            <p class="text-sm font-bold">Mínimo de Respostas por Grupo</p>
+                            <p class="text-xs text-gray-medium">Impede exibição de dados se o grupo for menor que o limite.</p>
+                        </div>
+                        <select class="form-control w-auto">
+                            <option>3 pessoas</option>
+                            <option selected>5 pessoas</option>
+                            <option>10 pessoas</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-between items-center py-16 border-bottom">
+                        <div>
+                            <p class="text-sm font-bold">Bloqueio de Filtros Combinados</p>
+                            <p class="text-xs text-gray-medium">Impede cruzar filtros (ex: Setor + Gênero) para evitar identificação.</p>
+                        </div>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="flex justify-between items-center py-16">
+                        <div>
+                            <p class="text-sm font-bold">Ocultar Comentários Abertos</p>
+                            <p class="text-xs text-gray-medium">Oculta textos escritos em grupos com menos de 10 pessoas.</p>
+                        </div>
+                        <div class="toggle-switch"></div>
+                    </div>
+                </div>
+                <div class="card-enterprise bg-ice">
+                    <h4 class="font-bold mb-16 text-success"><i data-lucide="shield-check" class="inline"></i> Status de Privacidade Ativo</h4>
+                    <p class="text-sm mb-16">Com as configurações atuais, o sistema garante 100% de impossibilidade técnica de identificação individual dos colaboradores.</p>
+                    <div class="p-12 border-radius-sm bg-white border border-gray-light">
+                        <p class="text-xs font-bold text-gray-medium">GRUPOS ATUALMENTE PROTEGIDOS (OCULTOS)</p>
+                        <p class="text-2xl font-extrabold mt-4">04 Setores</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 41 ADM: ACESSIBILIDADE -->
+        <section id="view-adm-acessibilidade" class="app-view">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Acessibilidade</h1>
+                    <p class="text-sm text-gray-medium">Ajuste a plataforma para garantir usabilidade para todos os gestores.</p>
+                </div>
+            </div>
+            <div class="card-enterprise max-w-2xl">
+                <div class="flex justify-between items-center py-16 border-bottom">
+                    <div>
+                        <p class="text-sm font-bold">Alto Contraste</p>
+                        <p class="text-xs text-gray-medium">Aumenta o contraste das cores de risco para daltônicos.</p>
+                    </div>
+                    <div class="toggle-switch off"></div>
+                </div>
+                <div class="flex justify-between items-center py-16 border-bottom">
+                    <div>
+                        <p class="text-sm font-bold">Reduzir Animações</p>
+                        <p class="text-xs text-gray-medium">Desativa transições dinâmicas no painel principal.</p>
+                    </div>
+                    <div class="toggle-switch"></div>
+                </div>
+                <div class="flex justify-between items-center py-16">
+                    <div>
+                        <p class="text-sm font-bold">Tamanho da Fonte Base</p>
+                        <p class="text-xs text-gray-medium">Ajusta o tamanho dos textos do painel.</p>
+                    </div>
+                    <select class="form-control w-auto">
+                        <option>Padrão</option>
+                        <option>Grande</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- 42 ADM: INTEGRACOES -->
+        <section id="view-adm-integracoes" class="app-view">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Integrações (Fake)</h1>
+                    <p class="text-sm text-gray-medium">Conecte a Workmind ao seu ecossistema de dados corporativos.</p>
+                </div>
+            </div>
+            <div class="grid lg-grid-cols-3 gap-16">
+                <!-- Integrations Cards -->
+                <div class="card-enterprise flex flex-col justify-between">
+                    <div class="mb-16">
+                        <h4 class="font-bold">Google Workspace</h4>
+                        <p class="text-xs text-gray-medium mt-4">Sincronização de organograma e Single Sign-On (SSO).</p>
+                    </div>
+                    <button class="btn-enterprise btn-enterprise-primary w-full text-xs">Conectado</button>
+                </div>
+                <div class="card-enterprise flex flex-col justify-between">
+                    <div class="mb-16">
+                        <h4 class="font-bold">Microsoft Teams</h4>
+                        <p class="text-xs text-gray-medium mt-4">Envio de alertas de risco e convites para monitoramento via chat.</p>
+                    </div>
+                    <button class="btn-enterprise btn-enterprise-outline w-full text-xs">Conectar Integracão</button>
+                </div>
+                <div class="card-enterprise flex flex-col justify-between">
+                    <div class="mb-16">
+                        <h4 class="font-bold">Sistema de Folha (API)</h4>
+                        <p class="text-xs text-gray-medium mt-4">Importação de dados de absenteísmo e turnover para cálculo de ROI.</p>
+                    </div>
+                    <button class="btn-enterprise btn-enterprise-outline w-full text-xs">Configurar Webhook</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 43 ADM: DESIGN E MARCA -->
+        <section id="view-adm-design" class="app-view">
+            <div class="page-header">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Design e Marca</h1>
+                    <p class="text-sm text-gray-medium">Personalize a identidade visual do portal do colaborador (White Label).</p>
+                </div>
+            </div>
+            <div class="card-enterprise max-w-2xl">
+                <div class="form-group">
+                    <label>Logotipo da Empresa</label>
+                    <div class="p-24 border border-dashed border-gray-light border-radius-md text-center cursor-pointer bg-ice">
+                        <i data-lucide="upload-cloud" class="mx-auto mb-8 text-gray-medium"></i>
+                        <p class="text-xs font-bold text-primary">Fazer upload de nova imagem (Fake)</p>
+                        <p class="text-xs text-gray-medium">PNG ou JPG transparente, máx 2MB</p>
+                    </div>
+                </div>
+                <div class="form-group mt-16">
+                    <label>Cor Primária (Hexadecimal)</label>
+                    <div class="flex items-center gap-sm">
+                        <div style="width: 32px; height: 32px; background: #030e4f; border-radius: 4px;"></div>
+                        <input type="text" class="form-control w-auto" value="#030e4f">
+                    </div>
+                </div>
+                <button class="btn-enterprise btn-enterprise-primary mt-24">Salvar Personalização</button>
+            </div>
+        </section>
+
+        <!-- PLACEHOLDER FOR OTHER VIEWS -->
+        <section id="view-placeholder" class="app-view">
+            <div class="card-enterprise text-center p-48">
+                <i data-lucide="construction" style="width: 48px; height: 48px; color: var(--gray-medium); margin: 0 auto 16px;"></i>
+                <h3 class="font-bold mb-8">Módulo em Desenvolvimento Comercial</h3>
+                <p class="text-sm text-gray-medium">Esta tela faz parte do backlog estratégico e será liberada em breve no protótipo navegável.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;"></div>
+
+    <script>
+        lucide.createIcons();
+
+        // UI Routing Logic
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobileOverlay');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const appViews = document.querySelectorAll('.app-view');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            overlay.style.display = 'block';
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.style.display = 'none';
+        });
+
+        // Toggle Switches Interaction Fake
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('off');
+            });
+        });
+
+        function switchView(viewId) {
+            // Remove active from all links
+            navLinks.forEach(l => l.classList.remove('active'));
+            
+            // Find target link and add active
+            const targetLink = document.querySelector(`.nav-link[data-view="${viewId}"]`);
+            if (targetLink) targetLink.classList.add('active');
+
+            // Hide all views
+            appViews.forEach(v => v.classList.remove('active'));
+            
+            // Show target view or placeholder
+            const targetView = document.getElementById('view-' + viewId);
+            if (targetView) {
+                targetView.classList.add('active');
+            } else {
+                document.getElementById('view-placeholder').classList.add('active');
+            }
+
+            // Close Mobile Sidebar
+            if (window.innerWidth <= 1024) {
+                sidebar.classList.remove('active');
+                overlay.style.display = 'none';
+            }
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const viewId = link.getAttribute('data-view');
+                switchView(viewId);
+            });
+        });
+
+        // Initialize Chart.js for the main dashboard
+        let mainChart = null;
+        function initMainChart() {
+            const ctx = document.getElementById('mainDashboardChart');
+            if (!ctx) return;
+            mainChart = new Chart(ctx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                    datasets: [
+                        { label: 'Score Workmind', data: [75, 78, 82, 80, 79, 78.4], borderColor: '#030e4f', tension: 0.4, fill: true, backgroundColor: 'rgba(3,14,79,0.05)' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { beginAtZero: false, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        window.onload = () => {
+            initMainChart();
+        };
+    </script>
+</body>
+</html>
