@@ -327,7 +327,8 @@
         
         <!-- Demo Banner -->
         <div class="wm-demo-banner">
-            <i data-lucide="info" style="width: 14px;"></i> Modo Demonstração. Dados fictícios. Nenhuma informação real processada.
+            <strong>modo demonstracao</strong>
+            <span>dados ficticios, nenhuma informacao real esta sendo processada</span>
         </div>
 
         <!-- Topbar -->
@@ -961,13 +962,21 @@
             document.getElementById('fakeModal').classList.remove('active');
         }
 
-        // Toast Feedback Fake
-        function showToast(msg) {
-            const toast = document.getElementById('wmToast');
-            document.getElementById('wmToastMsg').innerText = msg;
-            toast.classList.add('show');
+        // Toast Feedback Dinâmico
+        function showToast(message, type = "success") {
+            const toast = document.createElement("div");
+            toast.className = `wm-toast wm-toast--${type}`;
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
             setTimeout(() => {
-                toast.classList.remove('show');
+                toast.classList.add("is-visible");
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove("is-visible");
+                setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 

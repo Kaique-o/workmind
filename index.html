@@ -160,13 +160,13 @@
                 <span style="font-weight: 800; font-size: 1.25rem; color: var(--wm-color-primary); letter-spacing: -0.05em;">workmind</span>
             </div>
             <nav class="wm-nav">
-                <a href="#solucao">Solução</a>
-                <a href="#empresas">Para Empresas</a>
-                <a href="#colaboradores">Para Colaboradores</a>
-                <a href="#nr01">NR-01</a>
-                <a href="#privacidade">Privacidade</a>
-                <a href="#plataforma">Plataforma</a>
-                <a href="#faq">FAQ</a>
+                <a href="index.html#solucao">Solução</a>
+                <a href="index.html#empresas">Para Empresas</a>
+                <a href="index.html#colaboradores">Para Colaboradores</a>
+                <a href="index.html#nr01">NR-01</a>
+                <a href="index.html#privacidade">Privacidade</a>
+                <a href="index.html#plataforma">Plataforma</a>
+                <a href="index.html#faq">FAQ</a>
             </nav>
             <div class="flex items-center gap-4">
                 <button class="wm-btn wm-btn-primary" onclick="openDemoModal()">Acessar Demo</button>
@@ -427,7 +427,7 @@
         </section>
 
         <!-- 10 PLATAFORMA / IA / IMPACTO (Combined for brevity) -->
-        <section id="ia" class="wm-landing-section bg-white">
+        <section id="plataforma" class="wm-landing-section bg-white">
             <div class="wm-landing-container wm-split-section">
                 <div>
                     <span class="wm-hero-badge" style="background: rgba(59, 130, 246, 0.1); color: var(--wm-color-info);">Powered by IA</span>
@@ -526,13 +526,21 @@
             }
         });
 
-        // Toast Feedback Fake
-        function showToast(msg) {
-            const toast = document.getElementById('wmToast');
-            document.getElementById('wmToastMsg').innerText = msg;
-            toast.classList.add('show');
+        // Toast Feedback Dinâmico
+        function showToast(message, type = "success") {
+            const toast = document.createElement("div");
+            toast.className = `wm-toast wm-toast--${type}`;
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
             setTimeout(() => {
-                toast.classList.remove('show');
+                toast.classList.add("is-visible");
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove("is-visible");
+                setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 

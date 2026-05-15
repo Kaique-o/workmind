@@ -252,16 +252,20 @@
 
         /* Componentes de Demonstração (Demo Mode) */
         .wm-demo-banner {
-            background: var(--wm-color-warning);
-            color: white;
-            padding: 8px 16px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
+            padding: 10px 16px;
+            background: #fff7e6;
+            border-bottom: 1px solid rgba(244, 159, 28, 0.35);
+            color: #4b5563;
+            font-size: 14px;
+        }
+        
+        .wm-demo-banner strong {
+            color: #030e4f;
+            text-transform: uppercase;
         }
 
         .wm-modal-overlay {
@@ -295,7 +299,8 @@
 
         <!-- Demo Banner -->
         <div class="wm-demo-banner">
-            <i data-lucide="info" style="width: 14px;"></i> Modo Demonstração. Dados fictícios.
+            <strong>modo demonstracao</strong>
+            <span>dados ficticios, nenhuma informacao real esta sendo processada</span>
         </div>
 
         <!-- Topbar Mobile -->
@@ -441,7 +446,7 @@
                         <span style="font-size: 0.75rem; font-weight: 600;">Leva ~3 minutos. Vence amanhã.</span>
                     </div>
 
-                    <button class="wm-btn wm-btn-primary" onclick="openFakeModal('Formulário de Pesquisa', 'Simulando a abertura do questionário de monitoramento em etapas.')">Iniciar Pesquisa</button>
+                    <button class="wm-btn wm-btn-primary" onclick="switchView('pesquisa-detalhe')">Iniciar Pesquisa</button>
                 </div>
 
                 <div class="wm-card wm-privacy-card">
@@ -508,32 +513,180 @@
                 </div>
             </section>
 
-            <!-- VIEW 30: PRIVACIDADE -->
-            <section id="view-privacidade" class="wm-view">
+            <!-- VIEW: PESQUISA DETALHE -->
+            <section id="view-pesquisa-detalhe" class="wm-view">
                 <div class="wm-page-header">
-                    <h1 class="wm-page-title">Transparência</h1>
-                    <p class="wm-page-subtitle">Entenda exatamente como protegemos sua identidade na plataforma.</p>
+                    <button class="wm-btn wm-btn-light mb-4" style="width: auto; padding: 6px 12px;" onclick="switchView('monitoramento')">
+                        <i data-lucide="arrow-left" style="width: 16px;"></i> Voltar
+                    </button>
+                    <h1 class="wm-page-title">Monitoramento NR-01</h1>
+                    <p class="wm-page-subtitle">Avaliação oficial de bem-estar e riscos psicossociais.</p>
                 </div>
-
                 <div class="wm-card">
-                    <h3 style="font-size: 1rem; color: var(--wm-color-success); margin-bottom: var(--wm-space-2);"><i data-lucide="shield-check" style="vertical-align: text-bottom;"></i> O que a Empresa NÃO VÊ</h3>
-                    <ul style="padding-left: 20px; font-size: 0.875rem; color: var(--wm-color-text-muted); line-height: 1.6;">
-                        <li>Suas respostas individuais aos monitoramentos.</li>
-                        <li>Seu histórico de check-ins emocionais.</li>
-                        <li>Quais conteúdos ou trilhas você acessou.</li>
-                        <li>Seus pedidos de apoio imediato.</li>
+                    <p style="font-size: 0.875rem; color: var(--wm-color-text-muted); margin-bottom: 16px;">
+                        Responda com tranquilidade. Não existe resposta certa ou errada. Suas respostas entram em uma análise coletiva e anônima.
+                    </p>
+                    <ul style="font-size: 0.875rem; padding-left: 20px; color: var(--wm-color-primary); margin-bottom: 24px; line-height: 1.6;">
+                        <li>Tempo estimado: 3 minutos</li>
+                        <li>Questões: 9 perguntas</li>
+                        <li>Temas: Emocional, Pressão e Segurança</li>
                     </ul>
+                    <button class="wm-btn wm-btn-primary" onclick="switchView('pesquisa-etapa1')">Iniciar Agora</button>
                 </div>
+            </section>
 
+            <!-- VIEW: PESQUISA ETAPA 1 -->
+            <section id="view-pesquisa-etapa1" class="wm-view">
+                <div class="wm-page-header">
+                    <p class="wm-page-subtitle" style="font-size: 0.75rem; font-weight: bold;">Etapa 1 de 3</p>
+                    <div style="background: var(--wm-color-border); height: 6px; border-radius: 3px; margin: 8px 0 16px;">
+                        <div style="background: var(--wm-color-primary); height: 100%; width: 33%; border-radius: 3px;"></div>
+                    </div>
+                    <h1 class="wm-page-title">Estado Emocional</h1>
+                </div>
                 <div class="wm-card">
-                    <h3 style="font-size: 1rem; margin-bottom: var(--wm-space-2);"><i data-lucide="bar-chart" style="vertical-align: text-bottom; color: var(--wm-color-primary);"></i> O que a Empresa VÊ</h3>
-                    <p style="font-size: 0.875rem; color: var(--wm-color-text-muted); margin-bottom: var(--wm-space-4);">A empresa acessa apenas <strong>dados coletivos e anônimos</strong>, consolidados por setor ou unidade.</p>
-                    <div style="background: var(--wm-color-bg); padding: var(--wm-space-3); border-radius: var(--wm-radius-sm); font-size: 0.75rem; font-weight: 600; color: var(--wm-color-primary); text-align: center;">
-                        "O nível médio de estresse no setor Comercial aumentou 12% este mês."
+                    <h3 style="font-size: 1rem; margin-bottom: 16px;">Como você está se sentindo hoje?</h3>
+                    <select class="wm-btn wm-btn-light" style="width: 100%; text-align: left; padding: 12px; font-weight: normal;">
+                        <option>Selecione uma opção</option>
+                        <option>Tranquilo e focado</option>
+                        <option>Cansado mas produtivo</option>
+                        <option>Ansioso e sobrecarregado</option>
+                    </select>
+                </div>
+                <div class="wm-card">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px;">Qual seu nível de estresse recente?</h3>
+                    <input type="range" min="1" max="5" value="3" style="width: 100%;">
+                    <div class="flex justify-between" style="font-size: 0.75rem; color: var(--wm-color-text-muted); margin-top: 8px;">
+                        <span>Muito baixo</span>
+                        <span>Muito alto</span>
                     </div>
                 </div>
+                <div class="flex gap-4">
+                    <button class="wm-btn wm-btn-outline" onclick="switchView('pesquisa-detalhe')">Voltar</button>
+                    <button class="wm-btn wm-btn-primary" onclick="switchView('pesquisa-etapa2')">Continuar</button>
+                </div>
+                <button class="wm-btn wm-btn-light mt-4" onclick="showToast('Progresso salvo de forma segura')">Salvar e continuar depois</button>
+            </section>
 
-                <button class="wm-btn wm-btn-light" onclick="openFakeModal('Política de Privacidade', 'Termos fictícios de uso demonstrando conformidade com a LGPD e anonimato garantido.')">Ver Política de Privacidade Completa</button>
+            <!-- VIEW: PESQUISA ETAPA 2 -->
+            <section id="view-pesquisa-etapa2" class="wm-view">
+                <div class="wm-page-header">
+                    <p class="wm-page-subtitle" style="font-size: 0.75rem; font-weight: bold;">Etapa 2 de 3</p>
+                    <div style="background: var(--wm-color-border); height: 6px; border-radius: 3px; margin: 8px 0 16px;">
+                        <div style="background: var(--wm-color-primary); height: 100%; width: 66%; border-radius: 3px;"></div>
+                    </div>
+                    <h1 class="wm-page-title">Carga e Pressão</h1>
+                </div>
+                <div class="wm-card">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px;">Sua carga de trabalho tem sido sustentável?</h3>
+                    <select class="wm-btn wm-btn-light" style="width: 100%; text-align: left; padding: 12px; font-weight: normal;">
+                        <option>Sim, totalmente sustentável</option>
+                        <option>Parcialmente sustentável</option>
+                        <option>Não, estou sobrecarregado</option>
+                    </select>
+                </div>
+                <div class="wm-card">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px;">Você sente pressão excessiva por resultados?</h3>
+                    <select class="wm-btn wm-btn-light" style="width: 100%; text-align: left; padding: 12px; font-weight: normal;">
+                        <option>Raramente ou nunca</option>
+                        <option>Algumas vezes</option>
+                        <option>Frequentemente</option>
+                    </select>
+                </div>
+                <div class="flex gap-4">
+                    <button class="wm-btn wm-btn-outline" onclick="switchView('pesquisa-etapa1')">Voltar</button>
+                    <button class="wm-btn wm-btn-primary" onclick="switchView('pesquisa-etapa3')">Continuar</button>
+                </div>
+            </section>
+
+            <!-- VIEW: PESQUISA ETAPA 3 -->
+            <section id="view-pesquisa-etapa3" class="wm-view">
+                <div class="wm-page-header">
+                    <p class="wm-page-subtitle" style="font-size: 0.75rem; font-weight: bold;">Etapa 3 de 3</p>
+                    <div style="background: var(--wm-color-border); height: 6px; border-radius: 3px; margin: 8px 0 16px;">
+                        <div style="background: var(--wm-color-success); height: 100%; width: 100%; border-radius: 3px;"></div>
+                    </div>
+                    <h1 class="wm-page-title">Segurança Psicológica</h1>
+                </div>
+                <div class="wm-card">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px;">Você se sente seguro para pedir ajuda?</h3>
+                    <select class="wm-btn wm-btn-light" style="width: 100%; text-align: left; padding: 12px; font-weight: normal;">
+                        <option>Sempre me sinto seguro</option>
+                        <option>Às vezes tenho receio</option>
+                        <option>Não me sinto seguro</option>
+                    </select>
+                </div>
+                <div class="wm-card">
+                    <h3 style="font-size: 1rem; margin-bottom: 16px;">Você sente respeito no ambiente de trabalho?</h3>
+                    <select class="wm-btn wm-btn-light" style="width: 100%; text-align: left; padding: 12px; font-weight: normal;">
+                        <option>Sim, sempre</option>
+                        <option>Na maioria das vezes</option>
+                        <option>Não</option>
+                    </select>
+                </div>
+                <div class="flex gap-4">
+                    <button class="wm-btn wm-btn-outline" onclick="switchView('pesquisa-etapa2')">Voltar</button>
+                    <button class="wm-btn wm-btn-primary" onclick="switchView('pesquisa-conclusao'); showToast('Pesquisa enviada com segurança')">Concluir e Enviar</button>
+                </div>
+            </section>
+
+            <!-- VIEW: PESQUISA CONCLUSÃO -->
+            <section id="view-pesquisa-conclusao" class="wm-view">
+                <div class="wm-card" style="text-align: center; padding: 40px 20px;">
+                    <div style="width: 64px; height: 64px; background: var(--wm-color-success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                        <i data-lucide="check" style="width: 32px; height: 32px;"></i>
+                    </div>
+                    <h1 style="font-size: 1.5rem; margin-bottom: 16px; color: var(--wm-color-success);">Obrigado por contribuir</h1>
+                    <p style="font-size: 0.875rem; color: var(--wm-color-text-muted); margin-bottom: 32px; line-height: 1.5;">
+                        Suas respostas foram registradas de forma anônima e ajudam a identificar riscos coletivos para um ambiente mais saudável.
+                    </p>
+                    <button class="wm-btn wm-btn-primary mb-4" onclick="switchView('inicio')">Voltar ao Início</button>
+                    <button class="wm-btn wm-btn-outline" onclick="switchView('apoio')">Ver Recomendações</button>
+                </div>
+            </section>
+
+            <!-- VIEW: CONTA -->
+            <section id="view-conta" class="wm-view">
+                <div class="wm-page-header">
+                    <h1 class="wm-page-title">Conta</h1>
+                    <p class="wm-page-subtitle">Suas configurações e preferências.</p>
+                </div>
+
+                <div class="wm-card flex items-center justify-between cursor-pointer" onclick="showToast('Abrindo Perfil e Preferências')">
+                    <div class="flex items-center gap-4">
+                        <i data-lucide="user" style="color: var(--wm-color-primary);"></i>
+                        <h4 style="font-size: 0.875rem;">Perfil e Preferências</h4>
+                    </div>
+                    <i data-lucide="chevron-right" style="color: var(--wm-color-border);"></i>
+                </div>
+                <div class="wm-card flex items-center justify-between cursor-pointer" onclick="showToast('Abrindo Acessibilidade')">
+                    <div class="flex items-center gap-4">
+                        <i data-lucide="accessibility" style="color: var(--wm-color-primary);"></i>
+                        <h4 style="font-size: 0.875rem;">Acessibilidade</h4>
+                    </div>
+                    <i data-lucide="chevron-right" style="color: var(--wm-color-border);"></i>
+                </div>
+                <div class="wm-card flex items-center justify-between cursor-pointer" onclick="showToast('Abrindo Notificações')">
+                    <div class="flex items-center gap-4">
+                        <i data-lucide="bell" style="color: var(--wm-color-primary);"></i>
+                        <h4 style="font-size: 0.875rem;">Notificações</h4>
+                    </div>
+                    <i data-lucide="chevron-right" style="color: var(--wm-color-border);"></i>
+                </div>
+                <div class="wm-card flex items-center justify-between cursor-pointer" onclick="openFakeModal('Privacidade e LGPD', 'A política de privacidade da WorkMind atende às normas LGPD. Você garante sua anonimidade e que nenhum gestor pode quebrar as travas de volume mínimo (10 pessoas).')">
+                    <div class="flex items-center gap-4">
+                        <i data-lucide="shield" style="color: var(--wm-color-success);"></i>
+                        <h4 style="font-size: 0.875rem;">Privacidade e LGPD</h4>
+                    </div>
+                    <i data-lucide="chevron-right" style="color: var(--wm-color-border);"></i>
+                </div>
+                <div class="wm-card flex items-center justify-between cursor-pointer" onclick="window.location.href='index.html'">
+                    <div class="flex items-center gap-4">
+                        <i data-lucide="log-out" style="color: var(--wm-color-danger);"></i>
+                        <h4 style="font-size: 0.875rem; color: var(--wm-color-danger);">Sair da Demo</h4>
+                    </div>
+                    <i data-lucide="chevron-right" style="color: var(--wm-color-border);"></i>
+                </div>
             </section>
 
         </main>
@@ -561,7 +714,7 @@
                 <i data-lucide="life-buoy"></i>
                 <span>Apoio</span>
             </a>
-            <a href="#" class="wm-nav-item" data-target="privacidade">
+            <a href="#" class="wm-nav-item" data-target="conta">
                 <i data-lucide="user"></i>
                 <span>Conta</span>
             </a>
@@ -641,13 +794,21 @@
             document.getElementById('fakeModal').classList.remove('active');
         }
 
-        // Toast Feedback Fake
-        function showToast(msg) {
-            const toast = document.getElementById('wmToast');
-            document.getElementById('wmToastMsg').innerText = msg;
-            toast.classList.add('show');
+        // Toast Feedback Dinâmico
+        function showToast(message, type = "success") {
+            const toast = document.createElement("div");
+            toast.className = `wm-toast wm-toast--${type}`;
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
             setTimeout(() => {
-                toast.classList.remove('show');
+                toast.classList.add("is-visible");
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove("is-visible");
+                setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
     </script>
