@@ -249,12 +249,54 @@
         .mt-4 { margin-top: var(--wm-space-4); }
         .mb-2 { margin-bottom: var(--wm-space-2); }
         .text-center { text-align: center; }
+
+        /* Componentes de Demonstração (Demo Mode) */
+        .wm-demo-banner {
+            background: var(--wm-color-warning);
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wm-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(3, 14, 79, 0.5); backdrop-filter: blur(4px); 
+            z-index: 2000; display: none; align-items: center; justify-content: center; 
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .wm-modal-overlay.active { display: flex; opacity: 1; }
+        .wm-modal-content { 
+            background: white; padding: var(--wm-space-6); border-radius: var(--wm-radius-lg); 
+            max-width: 400px; width: 90%; box-shadow: var(--wm-shadow-floating); 
+            position: relative; transform: translateY(20px); transition: transform 0.3s; 
+        }
+        .wm-modal-overlay.active .wm-modal-content { transform: translateY(0); }
+        .wm-modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--wm-color-text-muted); cursor: pointer; }
+        
+        .wm-toast { 
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px); 
+            background: var(--wm-color-primary); color: white; padding: 12px 24px; 
+            border-radius: var(--wm-radius-full); font-weight: 600; font-size: 0.875rem; 
+            z-index: 9999; opacity: 0; transition: all 0.3s; display: flex; align-items: center; gap: 8px; 
+        }
+        .wm-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     </style>
 </head>
 <body>
 
     <!-- App Shell -->
     <div class="wm-app-shell">
+
+        <!-- Demo Banner -->
+        <div class="wm-demo-banner">
+            <i data-lucide="info" style="width: 14px;"></i> Modo Demonstração. Dados fictícios.
+        </div>
 
         <!-- Topbar Mobile -->
         <div class="wm-main-content pb-0" style="padding-bottom: 0;">
@@ -330,7 +372,7 @@
                             <p style="font-size: 0.75rem; color: var(--wm-color-text-muted);">Ação concluída. Essa ação ajudou você?</p>
                         </div>
                     </div>
-                    <button class="wm-btn wm-btn-light mt-4" style="padding: 8px;">Avaliar de Forma Anônima</button>
+                    <button class="wm-btn wm-btn-light mt-4" style="padding: 8px;" onclick="openFakeModal('Feedback Anônimo', 'Simulação do formulário de avaliação da ação com proteção de identidade.')">Avaliar de Forma Anônima</button>
                 </div>
             </section>
 
@@ -376,7 +418,7 @@
                     </div>
                 </div>
 
-                <button class="wm-btn wm-btn-primary" onclick="switchView('inicio')">Salvar Check-in</button>
+                <button class="wm-btn wm-btn-primary" onclick="openFakeModal('Resultado Privado', 'Seu check-in foi salvo. Recomendação: Faça uma pausa guiada de 3 minutos no módulo de Apoio.')">Salvar Check-in</button>
             </section>
 
             <!-- VIEW 10: MONITORAMENTO (Voz Segura) -->
@@ -399,14 +441,14 @@
                         <span style="font-size: 0.75rem; font-weight: 600;">Leva ~3 minutos. Vence amanhã.</span>
                     </div>
 
-                    <button class="wm-btn wm-btn-primary">Iniciar Pesquisa</button>
+                    <button class="wm-btn wm-btn-primary" onclick="openFakeModal('Formulário de Pesquisa', 'Simulando a abertura do questionário de monitoramento em etapas.')">Iniciar Pesquisa</button>
                 </div>
 
                 <div class="wm-card wm-privacy-card">
                     <i data-lucide="lock" class="wm-icon-accent"></i>
                     <div>
                         <h4>Garantia de Confiança Radical</h4>
-                        <p>Se um grupo/setor tiver menos de 5 respostas, a Workmind oculta os dados para evitar qualquer tipo de identificação por eliminação.</p>
+                        <p>Se um grupo/setor tiver menos de 10 respostas, a Workmind oculta os dados para mitigar riscos de identificação por eliminação.</p>
                     </div>
                 </div>
             </section>
@@ -421,7 +463,7 @@
                 <div class="wm-card" style="background: #fef2f2; border-color: #fee2e2;">
                     <h3 style="font-size: 1rem; color: var(--wm-color-danger); margin-bottom: 4px;"><i data-lucide="alert-triangle" style="width: 18px; display: inline-block; vertical-align: text-bottom;"></i> Precisa de ajuda urgente?</h3>
                     <p style="font-size: 0.875rem; color: var(--wm-color-text-muted); margin-bottom: var(--wm-space-4);">Se você está em risco imediato, procure ajuda profissional agora.</p>
-                    <button class="wm-btn" style="background: white; border: 1px solid var(--wm-color-danger); color: var(--wm-color-danger);">Ver Contatos de Emergência (CVV)</button>
+                    <button class="wm-btn" style="background: white; border: 1px solid var(--wm-color-danger); color: var(--wm-color-danger);" onclick="showToast('Abrindo integração com apoio de emergência CVV')">Ver Contatos de Emergência (CVV)</button>
                 </div>
 
                 <h3 style="font-size: 0.875rem; color: var(--wm-color-text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; margin: var(--wm-space-6) 0 var(--wm-space-3);">Como podemos ajudar agora?</h3>
@@ -491,7 +533,7 @@
                     </div>
                 </div>
 
-                <button class="wm-btn wm-btn-light">Ver Política de Privacidade Completa</button>
+                <button class="wm-btn wm-btn-light" onclick="openFakeModal('Política de Privacidade', 'Termos fictícios de uso demonstrando conformidade com a LGPD e anonimato garantido.')">Ver Política de Privacidade Completa</button>
             </section>
 
         </main>
@@ -525,6 +567,24 @@
             </a>
         </nav>
 
+    </div>
+
+    <!-- Modal Demo -->
+    <div id="fakeModal" class="wm-modal-overlay">
+        <div class="wm-modal-content">
+            <button class="wm-modal-close" onclick="closeFakeModal()"><i data-lucide="x"></i></button>
+            <h3 id="fakeModalTitle" style="font-size: 1.25rem; margin-bottom: 8px;">Título</h3>
+            <p id="fakeModalDesc" style="font-size: 0.875rem; color: var(--wm-color-text-muted); margin-bottom: 24px;">Descrição</p>
+            <div class="flex flex-col gap-4">
+                <button class="wm-btn wm-btn-primary" onclick="closeFakeModal()">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Fake -->
+    <div id="wmToast" class="wm-toast">
+        <i data-lucide="check-circle" style="width: 18px;"></i>
+        <span id="wmToastMsg">Ação executada no protótipo</span>
     </div>
 
     <script>
@@ -569,6 +629,27 @@
                 }
             });
         });
+
+        // Fake Modal Logic
+        function openFakeModal(title, desc) {
+            document.getElementById('fakeModalTitle').innerText = title;
+            document.getElementById('fakeModalDesc').innerText = desc;
+            document.getElementById('fakeModal').classList.add('active');
+        }
+
+        function closeFakeModal() {
+            document.getElementById('fakeModal').classList.remove('active');
+        }
+
+        // Toast Feedback Fake
+        function showToast(msg) {
+            const toast = document.getElementById('wmToast');
+            document.getElementById('wmToastMsg').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
     </script>
 </body>
 </html>
